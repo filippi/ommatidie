@@ -7,6 +7,8 @@ let stopPrediction = false;
 let isPlaying = false,
     gotMetadata = false;
 let firstRun = true;
+let lastDistanceToHead = -1
+let savedDistanceToHead= 1
 
 // check if metadata is ready - we need the sourceVideo size
 sourceVideo.onloadedmetadata = () => {
@@ -222,14 +224,187 @@ function draw(personSegmentation) {
 
 }
 
-// Draw dots
+var refScene = {scene:{
+                              camera: {
+                              center: { x: 0, y: 0, z: 0 }, 
+                              eye: { x: 0, y: 0, z: 0 }, 
+                               up: { x: 0, y: 0, z: 1 }
+                                }
+                            },}
+
+
+
+var lookerRef = {inited: false, leftEar: { x: 0, y: 0}, rightEar: { x: 0, y: 0}, up: { x: 0, y: 0, z: 1 }, }
+
+var lookerMod = {inited: false, leftEar: { x: 0, y: 0}, rightEar: { x: 0, y: 0}, up: { x: 0, y: 0, z: 0 }, }
+
+function dist( p1, p2 ){
+    var a = p1.x - p2.x;
+    var b = p1.y - p2.y;
+    return Math.sqrt( a*a + b*b );
+}
+function toDegrees(rads) {
+  return rads * 180 / Math.PI;
+};
+function toRads(degs) {
+  return (degs / 180) * Math.PI;
+};
 function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
+    var rEye = null
+    var lEye = null
+    var rHand = null
+    var lHand = null
+    var rEar = null
+    var lEar = null
+    var dEars = 0.2 // typical distance between human eyes
+ 
+    var camFOV = toRads(55)
+
+    // find right eye, left eye, right hand, left hand
+    for (let i = 0; i < keypoints.length; i++) {
+        const keypoint = keypoints[i];
+
+        if (keypoint.score > minConfidence) {
+                if (keypoint.part === 'rightEye'){
+                  rEye = keypoint.position;
+                 }
+                if (keypoint.part === 'leftEye'){
+                  lEye = keypoint.position;
+                 }
+                if (keypoint.part === 'rightHand'){
+                  rHand = keypoint.position;
+                 }
+                if (keypoint.part === 'leftHand'){
+                  lHand = keypoint.position;
+                 }
+                if (keypoint.part === 'rightEar'){
+                  rEar = keypoint.position;
+                 }
+                if (keypoint.part === 'leftEar'){
+                  lEar = keypoint.position;
+                 }
+            
+        const {y, x} = keypoint.position;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, 2 * Math.PI);
+        ctx.fillStyle = color;
+        ctx.fill();
+
+        }
+    }
+
+
+   
+    
+    // exit if not both eyes
+    if((rEye === null) || (lEye === null)||(rEar === null) || (lEar === null)){
+        return;
+    }
+
+
+    
+    // normalize both eyes positions 
+    rEar.x = rEar.x/sourceVideo.videoWidth;
+    rEar.y = rEar.y/sourceVideo.videoHeight;
+    lEar.x = lEar.x/sourceVideo.videoWidth;
+    lEar.y = lEar.y/sourceVideo.videoHeight;
+    
+     
+   
+    
+    // if no ref looker, looker is set and continue
+    if (lookerRef.inited === false) {   
+      lookerRef.leftEar.x = lEar.x;
+      lookerRef.rightEar.x = rEar.x;  
+      lookerRef.leftEar.y = lEar.y;
+      lookerRef.rightEar.y = rEar.y;
+        //lookerRef.inited = true;
+    }
+    
+    // compute distance = distance between Ears
+    var interEars = dist(lookerRef.leftEar,lookerRef.rightEar);
+    var iEarsInAngle = interEars*camFOV
+    var zEarsInAngle = (((lEar.y+rEar.y)/2)*camFOV)+(Math.PI/2)-(camFOV/2)
+    var xEarsInAngle = (((lEar.x+rEar.x)/2)*camFOV)+(Math.PI/2)-(camFOV/2)
+    
+    distanceToHead = ((dEars/2)/Math.tan(iEarsInAngle))
+   // console.log(distanceToHead);
+    //  now compute the face location in space in meters with 0 being the screen center .. dampen the distance to the screen as should not move fast. Given the initialisation is 0.5 meters, 
+    
+    
+    // OK, from that I can compute the camera vector to the center of the figure (given the center is 000)
+    // If the center is at 0/0/0 and it is at the center of the screen... well shall be no problem.
+    
+     
+    // make the diff by comparing with the reference looker 
+    
+    // compute the new Scene 
+    //QRect face = featureDetector->getFaceRect();
+    //QRect lEar = featureDetector->getLeftEarRect();
+    //QRect rEar = featureDetector->getRightEarRect();
+
+
+    //QSize imageSize = featureDetector->getImageSize();
+    //float distFromCamera = featureDetector->getDistanceFromCamera();
+    //zFar = distFromCamera;
+
+    //int centerEarsX = (lEar.x() + rEar.right()) / 2;
+    //int centerEarsY = lEar.y() + lEar.height() / 2;
+
+    //float ratio = 0.05f;
+    //int x = centerEarsX - imageSize.width() / 2;
+    //int y = centerEarsY - imageSize.height() / 2;
+
+    //cameraPosition.setX(x * ratio);
+    //cameraPosition.setY(-y * ratio);
+    //cameraPosition.setZ(distFromCamera / 3.5f);
+    fig = document.getElementById('myDiv');
+    var nx = 1//fig.layout.scene.camera.Ear.x 
+    var ny = 1//fig.layout.scene.camera.Ear.y 
+    var nz = 1//fig.layout.scene.camera.Ear.z 
+      if (lastDistanceToHead == -1){
+          lastDistanceToHead = distanceToHead ;
+      }
+       
+    else{
+        lastDistanceToHead = distanceToHead*0.5 + lastDistanceToHead*0.5;
+        if (Math.abs(lastDistanceToHead-savedDistanceToHead)>0.005){
+            savedDistanceToHead = lastDistanceToHead;
+            
+        }
+    }
+    var adjustedDistance = savedDistanceToHead*3//10-4
+    
+ 
+     nx = adjustedDistance * Math.cos(xEarsInAngle)
+     ny = adjustedDistance * Math.sin(xEarsInAngle)
+     nz = adjustedDistance * Math.cos(zEarsInAngle)
+ 
+    
+    var newScene = {scene:{
+                              camera: {
+                              center: { x: 0, y: 0, z: 0}, 
+                              eye: { x: nx, y: ny, z: nz }, 
+                                  //eye: { x:2, y:  3*(1-interEyes*lookerRef.leftEye.x), z: 3*(1-interEyes*lookerRef.leftEye.y )}, 
+                               up: { x: 0, y: 0, z: 1 }
+                                }
+                            },}
+    // update the layout
+    var test = fig.layout.scene.camera
+  
+        
+    lastDistanceToHead = lastDistanceToHead+0
+    console.log(nx,ny,nz) ;
+    Plotly.relayout(document.getElementById('myDiv'), newScene);
+    
+}
+// Draw dots
+function drawKeypoints2(keypoints, minConfidence, ctx, color = 'aqua') {
     for (let i = 0; i < keypoints.length; i++) {
         const keypoint = keypoints[i];
 
         if (keypoint.score < minConfidence) {
-            
-           
             continue;
         }else{
              if (keypoint.part === 'rightEye'){
@@ -249,7 +424,7 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
                             },
                     };
             
-                    Plotly.relayout(document.getElementById('myDiv'), update);
+                    Plotly.relayout(document.getElementById('myDiv'), refScene);
                  }
         }
 
