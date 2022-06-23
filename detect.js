@@ -138,17 +138,7 @@ async function predictLoop(net) {
 
             // Handle alerts
             if (score > facePixels * touchThreshold && !alertTimeout) {
-                console.info(` numPixels: ${numPixels} \n facePixels: ${facePixels}\n score: ${score}, touchScore: ${touchScore}\n` +
-                    ` facePixels%: ${facePixels / numPixels}\n touch%: ${score / facePixels}`);
-                alerts++;
-                console.log("alert!!!", alerts);
-
-                // User alerts
-                if (beepToggle.checked)
-                    beep(350, 150, 0);
-                if (notifyToggle.checked)
-                    notify(`You touched your face! That's ${touches+1} times now`);
-
+ 
                 alertTimeout = true;
 
                 setTimeout(() => {
@@ -256,7 +246,7 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     var lHand = null
     var rEar = null
     var lEar = null
-    var dEars = 0.2 // typical distance between human eyes
+    var dEars = 0.1 // typical distance between human eyes
  
     var camFOV = toRads(55)
 
@@ -266,10 +256,10 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
 
         if (keypoint.score > minConfidence) {
                 if (keypoint.part === 'rightEye'){
-                  rEye = keypoint.position;
+                  rEar = keypoint.position;
                  }
                 if (keypoint.part === 'leftEye'){
-                  lEye = keypoint.position;
+                  lEar = keypoint.position;
                  }
                 if (keypoint.part === 'rightHand'){
                   rHand = keypoint.position;
@@ -278,10 +268,10 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
                   lHand = keypoint.position;
                  }
                 if (keypoint.part === 'rightEar'){
-                  rEar = keypoint.position;
+                  rEye = keypoint.position;
                  }
                 if (keypoint.part === 'leftEar'){
-                  lEar = keypoint.position;
+                  lEye = keypoint.position;
                  }
             
         const {y, x} = keypoint.position;
@@ -331,55 +321,26 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     distanceToHead = ((dEars/2)/Math.tan(iEarsInAngle))
    // console.log(distanceToHead);
     //  now compute the face location in space in meters with 0 being the screen center .. dampen the distance to the screen as should not move fast. Given the initialisation is 0.5 meters, 
-    
-    
-    // OK, from that I can compute the camera vector to the center of the figure (given the center is 000)
-    // If the center is at 0/0/0 and it is at the center of the screen... well shall be no problem.
-    
-     
-    // make the diff by comparing with the reference looker 
-    
-    // compute the new Scene 
-    //QRect face = featureDetector->getFaceRect();
-    //QRect lEar = featureDetector->getLeftEarRect();
-    //QRect rEar = featureDetector->getRightEarRect();
 
-
-    //QSize imageSize = featureDetector->getImageSize();
-    //float distFromCamera = featureDetector->getDistanceFromCamera();
-    //zFar = distFromCamera;
-
-    //int centerEarsX = (lEar.x() + rEar.right()) / 2;
-    //int centerEarsY = lEar.y() + lEar.height() / 2;
-
-    //float ratio = 0.05f;
-    //int x = centerEarsX - imageSize.width() / 2;
-    //int y = centerEarsY - imageSize.height() / 2;
-
-    //cameraPosition.setX(x * ratio);
-    //cameraPosition.setY(-y * ratio);
-    //cameraPosition.setZ(distFromCamera / 3.5f);
     fig = document.getElementById('myDiv');
-    var nx = 1//fig.layout.scene.camera.Ear.x 
-    var ny = 1//fig.layout.scene.camera.Ear.y 
-    var nz = 1//fig.layout.scene.camera.Ear.z 
       if (lastDistanceToHead == -1){
           lastDistanceToHead = distanceToHead ;
       }
        
     else{
-        lastDistanceToHead = distanceToHead*0.5 + lastDistanceToHead*0.5;
+        lastDistanceToHead = distanceToHead*0.9 + lastDistanceToHead*0.1;
         if (Math.abs(lastDistanceToHead-savedDistanceToHead)>0.005){
             savedDistanceToHead = lastDistanceToHead;
             
         }
     }
-    var adjustedDistance = savedDistanceToHead*3//10-4
+    
+    var adjustedDistance = 1// savedDistanceToHead
     
  
-     nx = adjustedDistance * Math.cos(xEarsInAngle)
-     ny = adjustedDistance * Math.sin(xEarsInAngle)
-     nz = adjustedDistance * Math.cos(zEarsInAngle)
+    var  nx = adjustedDistance * Math.cos(xEarsInAngle)
+    var ny = adjustedDistance * Math.sin(xEarsInAngle)
+    var nz = adjustedDistance * Math.cos(zEarsInAngle)
  
     
     var newScene = {scene:{
@@ -394,49 +355,13 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     var test = fig.layout.scene.camera
   
         
-    lastDistanceToHead = lastDistanceToHead+0
+  
     console.log(nx,ny,nz) ;
     Plotly.relayout(document.getElementById('myDiv'), newScene);
     
 }
 // Draw dots
-function drawKeypoints2(keypoints, minConfidence, ctx, color = 'aqua') {
-    for (let i = 0; i < keypoints.length; i++) {
-        const keypoint = keypoints[i];
 
-        if (keypoint.score < minConfidence) {
-            continue;
-        }else{
-             if (keypoint.part === 'rightEye'){
-                  nx=  keypoint.position.x;
-                 
-                  ny=  keypoint.position.y;
-                 let dispX =  (nx-400)/100;
-                console.log(keypoint.position, dispX);
-                
-                var update = {
-                    scene:{
-                              camera: {
-                              center: { x: 1-dispX, y: 0, z: 0 }, 
-                              eye: { x: 2, y: 2, z: 0.1 }, 
-                               up: { x: 0, y: 0, z: 1 }
-                                }
-                            },
-                    };
-            
-                    Plotly.relayout(document.getElementById('myDiv'), refScene);
-                 }
-        }
-
-        const {y, x} = keypoint.position;
-        
-        ctx.beginPath();
-        ctx.arc(x, y, 4, 0, 2 * Math.PI);
-        ctx.fillStyle = color;
-        ctx.fill();
-
-    }
-}
 
 // Helper function to convert an arrow into a matrix for easier pixel proximity functions
 function arrayToMatrix(arr, rowLength) {

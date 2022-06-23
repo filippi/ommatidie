@@ -59,19 +59,21 @@ scene:{
 <body>
    
 <div id="main">
-    <canvas></canvas>
-    <video id="myVid" autoplay playsinline></video>
+
+    <div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
     <div id="content">
         <h1>Face Touch Monitor</h1>
   
         <button id="start">Start monitoring</button>
-        <div id="usageNoteMain">
-         
+        <div id="usageNoteMain" hidden>
+                 <canvas></canvas>
+    <video id="myVid" autoplay playsinline hidden></video>
         </div>
     </div>
+
 </div>
-<div id="loader"></div> 
-<div id="dashboard">
+<div id="loader" hidden></div> 
+<div id="dashboard" hidden>
     <div id="dashboardContent">
         <h3>Statistics</h3>
         <p>Status: <span id="userMessage">Click to the left to activate your webcam.</span></p>
@@ -82,7 +84,7 @@ scene:{
             <p>FPS: <span id="fps"></span></p>
         </div>
         <h3>Controls</h3>
-        <div id="controls">
+        <div id="controls" hidden>
             <label for="alertTimeOut">Time between alerts (s)</label>
             <input type="text" size=4 id="alertTimeOut" name="alertTimeOut" value="5"><br>
 
@@ -92,14 +94,14 @@ scene:{
             <input type="checkbox" id="notifyToggle" name="notifyToggle" value="notifyToggle" >
             <label for="notifyToggle">Browser notification on touch</label><br>
 
-            <input type="checkbox" id="showMask" name="showMask" value="showMask" checked>
+            <input type="checkbox" id="showMask" name="showMask" value="showMask" >
             <label for="showMask">Display the segmentation mask</label><br>
 
             <input type="checkbox" id="showPoints" name="showPoints" value="showPoints" checked>
             <label for="showPoints">Display detection points</label><br>
 
             <p>Trade off speed for accuracy:</p>
-            <button id="highSpeed" disabled>Faster</button>
+            <button id="highSpeed" enabled>Faster</button>
             <button id="normalSpeed" disabled>Normal</button>
             <button id="lowerSpeed" disabled>More accurate</button>
             <button id="lowSpeed" disabled>Most accurate</button>
@@ -110,9 +112,7 @@ scene:{
         </div>
     </div>
 </div>
-<div id="credits">
-        <div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
-</div>
+
 <script src="ui-helper.js"></script>
 <script src="detect.js"></script>
 
