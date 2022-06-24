@@ -306,18 +306,18 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
         }
     }
 
-    var adjustedDistance = 1// savedDistanceToHead
+    var adjustedDistance = 2// savedDistanceToHead
 
     var nx = adjustedDistance * Math.cos(xEarsInAngle)
     var ny = adjustedDistance * Math.sin(xEarsInAngle)
-    var nz = adjustedDistance * Math.cos(zEarsInAngle)
+    var nz = adjustedDistance * Math.cos(zEarsInAngle) + 0.5
     //if(fig.layout.scene.camera != null){
     var newScene = {
         scene: {
             camera: {
-                center: { x: 0, y: 0, z: 0 },//fig.layout.scene.camera.center, 
+                center: { x: 0, y: -1, z: 0 },//fig.layout.scene.camera.center,
                 eye: { x: nx, y: ny, z: nz },
-                //eye: { x:2, y:  3*(1-interEyes*lookerRef.leftEye.x), z: 3*(1-interEyes*lookerRef.leftEye.y )}, 
+                //eye: { x:2, y:  3*(1-interEyes*lookerRef.leftEye.x), z: 3*(1-interEyes*lookerRef.leftEye.y )},
                 up: { x: 0, y: 0, z: 1 }
             }
         },
@@ -326,10 +326,8 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
 
     Plotly.relayout(document.getElementById('myDiv'), newScene);
     // }
-
 }
 // Draw dots
-
 
 // Helper function to convert an arrow into a matrix for easier pixel proximity functions
 function arrayToMatrix(arr, rowLength) {
