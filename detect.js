@@ -3,7 +3,6 @@ const sourceVideo = document.querySelector('video');
 const drawCanvas = document.querySelector('canvas#plotfoncier');
 const loader = document.getElementById('loader');
 
-
 //=== CAMERA ACCESS ===
 function handleSuccess(stream) {
     const video = document.querySelector('video');
@@ -31,8 +30,78 @@ document.querySelector('#start').addEventListener('click', () => {
 });
 
 
+class PersonCanvas {
+    constructor() {
+        this.canvas = document.querySelector('canvas#person')
+        this.ctx = this.canvas.getContext('2d');
+
+        this.ctx.strokeStyle = "#666666";
+        this.ctx.lineWidth = 5;
+
+        this.centerHead = {
+            x: this.canvas.width / 2,
+            y: 150
+        }
+    }
+
+    show() {
+        this.canvas.style.display = "block"
+        this._drawFixedPart()
+        this.updatePositions()
+    }
+
+    hide() {
+        this.canvas.style.display = "none"
+    }
+
+    updatePositions(position) {
+        if (!position) return;
+
+        const { leftHand, rightHand } = position;
+        // const leftHand = {x: 0.2, y: 0.2}
+        // const rightHand = {x: 0.7, y: 0.7}
+
+        const lh = this._projectCoords(leftHand)
+        const rh = this._projectCoords(rightHand)
+
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this._drawFixedPart();
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.centerHead.x, 230)
+        this.ctx.lineTo(lh.x, lh.y);
+        this.ctx.moveTo(this.centerHead.x, 230)
+        this.ctx.lineTo(rh.x, rh.y);
+        this.ctx.stroke();
+    }
+
+    _projectCoords(obj) {
+        const refX = this.centerHead.x;
+        const refY = this.centerHead.y;
+
+        return {
+            x: obj.x * refX / 0.5,
+            y: obj.y * refY / 0.5
+        };
+    }
+
+    _drawFixedPart() {
+        this.ctx.beginPath();
+        this.ctx.arc(this.centerHead.x, this.centerHead.y, 50, 0, Math.PI * 2)
+        this.ctx.moveTo(this.centerHead.x, 200);
+        this.ctx.lineTo(this.centerHead.x, 300);
+        this.ctx.lineTo(this.centerHead.x + this.centerHead.x / 3, 400);
+        this.ctx.moveTo(this.centerHead.x, 300);
+        this.ctx.lineTo(this.centerHead.x - this.centerHead.x / 3, 400);
+
+        this.ctx.stroke();
+    }
+}
+
+
 // Canvas setup
 const drawCtx = drawCanvas.getContext('2d');
+const personCanvas = new PersonCanvas();
 
 // Global flags
 let flipHorizontal = true;
@@ -80,6 +149,7 @@ async function predictLoop(net) {
     let lastFaceArray = new Int32Array(sourceVideo.width * sourceVideo.height);
 
     loader.style.display = "none";
+    personCanvas.show()
 
     // Timer to update the face mask
     let updateFace = true;
@@ -282,7 +352,7 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     }
     
     var buddyMove =  { leftHand: { x: lHandx, y: lHandy }, rightHand: { x: rHandx, y: rHandy }};
-  
+    personCanvas.updatePositions(buddyMove);
  
     // if no ref looker, looker is set and continue
     if (lookerRef.inited === false) {
@@ -332,6 +402,8 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
         },
     }
     // update the layout
+
+    // console.log(fig.layout.scene?.camera)
 
     Plotly.relayout(document.getElementById('myDiv'), newScene);
     // }

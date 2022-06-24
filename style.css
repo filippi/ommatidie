@@ -120,3 +120,14 @@ div#myDiv{
         margin-top: 0;
     }
 }
+
+canvas#person {
+    display: none;
+    width: 400px;
+    height: 500px;
+    border: 1px solid grey;
+    position: absolute;
+    z-index: 10000;
+    top: 0;
+    right: 0;
+}
