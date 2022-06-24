@@ -229,7 +229,6 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     var dEars = 0.1 // typical distance between human eyes
 
     var camFOV = toRads(50)
-
     // find right eye, left eye, right hand, left hand
     for (let i = 0; i < keypoints.length; i++) {
         const keypoint = keypoints[i];
@@ -241,10 +240,11 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
             if (keypoint.part === 'leftEye') {
                 lEar = keypoint.position;
             }
-            if (keypoint.part === 'rightHand') {
+            if (keypoint.part === 'rightWrist') {
                 rHand = keypoint.position;
+                  
             }
-            if (keypoint.part === 'leftHand') {
+            if (keypoint.part === 'leftWrist') {
                 lHand = keypoint.position;
             }
             if (keypoint.part === 'rightEar') {
@@ -253,13 +253,7 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
             if (keypoint.part === 'leftEar') {
                 lEye = keypoint.position;
             }
-
-            const { y, x } = keypoint.position;
-
-            ctx.beginPath();
-            ctx.arc(x, y, 4, 0, 2 * Math.PI);
-            ctx.fillStyle = color;
-            ctx.fill();
+ 
         }
     }
 
@@ -273,8 +267,23 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     rEar.y = rEar.y / sourceVideo.videoHeight;
     lEar.x = lEar.x / sourceVideo.videoWidth;
     lEar.y = lEar.y / sourceVideo.videoHeight;
-
-
+    var lHandx = 0.5
+    var lHandy = 0.5
+    var rHandx = 0.5
+    var rHandy = 0.5
+    
+    if (lHand != null){
+        lHandx = lHand.x / sourceVideo.videoWidth;
+        lHandy = lHand.y / sourceVideo.videoHeight;
+    }
+    if (rHand != null){
+        rHandx = rHand.x / sourceVideo.videoWidth;
+        rHandy = rHand.y / sourceVideo.videoHeight; 
+    }
+    
+    var buddyMove =  { leftHand: { x: lHandx, y: lHandy }, rightHand: { x: rHandx, y: rHandy }};
+  
+ 
     // if no ref looker, looker is set and continue
     if (lookerRef.inited === false) {
         lookerRef.leftEar.x = lEar.x;
