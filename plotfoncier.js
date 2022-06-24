@@ -1,4 +1,4 @@
-d3.csv('https://raw.githubusercontent.com/filippi/ommatidie/main/scatterSetFoncier.csv', function (err, rows) {
+d3.csv('https://raw.githubusercontent.com/filippi/ommatidie/main/scatterSetFoncierMOD.csv', function (err, rows) {
     function unpack(rows, key) {
         return rows.map(function (row) {
             return row[key];
@@ -20,15 +20,21 @@ d3.csv('https://raw.githubusercontent.com/filippi/ommatidie/main/scatterSetFonci
         type: 'scatter3d'
     };
 
+
+
+    
     var data = [trace1];
     var layout = {
+        
         margin: {
             l: 0,
             r: 0,
             b: 0,
             t: 0
         },
-        showLegend: true
+        plot_bgcolor:"black",
+        paper_bgcolor:"black",
+        showLegend: false
     };
 
     //layout[:showLegend] = true
@@ -37,25 +43,4 @@ d3.csv('https://raw.githubusercontent.com/filippi/ommatidie/main/scatterSetFonci
 
     Plotly.newPlot(graphDiv, data, layout);
 
-    var update = {
-        scene: {
-            camera: {
-                center: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                eye: {
-                    x: 2,
-                    y: 2,
-                    z: 0.1
-                },
-                up: {
-                    x: 0,
-                    y: 0,
-                    z: 1
-                }
-            }
-        },
-    };
 });
