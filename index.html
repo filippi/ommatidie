@@ -35,7 +35,12 @@ var layout = {margin: {
 	r: 0,
 	b: 0,
 	t: 0
-  }};
+  },
+           showLegend:true  
+             };
+        
+//layout[:showLegend] = true
+
 var graphDiv = document.getElementById('myDiv')
 
 Plotly.newPlot(graphDiv, data, layout);
@@ -65,9 +70,9 @@ scene:{
         <h1>Face Touch Monitor</h1>
   
         <button id="start">Start monitoring</button>
-        <div id="usageNoteMain" hidden>
+        <div id="usageNoteMain" hidden  >
                  <canvas></canvas>
-    <video id="myVid" autoplay playsinline hidden></video>
+    <video id="myVid" autoplay playsinline ></video>
         </div>
     </div>
 

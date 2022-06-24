@@ -102,35 +102,12 @@ function updateStats(touched) {
     lastFrameTime = now;
     fpsDisplay.innerText = fps.toFixed(1);
 
-    // Touch counter
-    if (touched && lastTouchStatus === false)
-        touches++;
-
-    lastTouchStatus = touched;
-    touchesDisplay.innerText = touches;
-
-    // Last Touch timer
-    if (touched)
-        lastTouchTime = now;
-    if (lastTouchTime) {
-        lastTouchDisplay.innerHTML = ((now - lastTouchTime) / 1000).toFixed(0) + " sec ago";
-
-        // 1 / ((new Date().getTime() - startTime)/(60*1000*60))
-        perHourDisplay.innerHTML = (touches / ((now - startTime) / (60 * 60 * 1000))).toFixed(2);
-    } else {
-        lastTouchDisplay.innerHTML = "None yet";
-    }
 }
 
 
 // Beep tone
 function beep(tone, duration) {
-    let audioCtx = new AudioContext;
-    let oscillator = audioCtx.createOscillator();
-    oscillator.frequency.value = tone;
-    oscillator.connect(audioCtx.destination);
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + duration / 1000);
+  
 }
 
 

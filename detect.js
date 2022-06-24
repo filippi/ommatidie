@@ -248,7 +248,7 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     var lEar = null
     var dEars = 0.1 // typical distance between human eyes
  
-    var camFOV = toRads(55)
+    var camFOV = toRads(50)
 
     // find right eye, left eye, right hand, left hand
     for (let i = 0; i < keypoints.length; i++) {
@@ -259,7 +259,7 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
                   rEar = keypoint.position;
                  }
                 if (keypoint.part === 'leftEye'){
-                  lEar = keypoint.position;
+                  lEar   = keypoint.position;
                  }
                 if (keypoint.part === 'rightHand'){
                   rHand = keypoint.position;
@@ -341,23 +341,23 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     var  nx = adjustedDistance * Math.cos(xEarsInAngle)
     var ny = adjustedDistance * Math.sin(xEarsInAngle)
     var nz = adjustedDistance * Math.cos(zEarsInAngle)
- 
-    
-    var newScene = {scene:{
+   //if(fig.layout.scene.camera != null){
+       var newScene = {scene:{
                               camera: {
-                              center: { x: 0, y: 0, z: 0}, 
+                              center: { x: 0, y: 0, z: 0 },//fig.layout.scene.camera.center, 
                               eye: { x: nx, y: ny, z: nz }, 
                                   //eye: { x:2, y:  3*(1-interEyes*lookerRef.leftEye.x), z: 3*(1-interEyes*lookerRef.leftEye.y )}, 
                                up: { x: 0, y: 0, z: 1 }
                                 }
                             },}
     // update the layout
-    var test = fig.layout.scene.camera
+    var testStr = "%s"%JSON.stringify(fig.layout.scene.camera)
+    //var test = JSON.parse()
   
-        
-  
-    console.log(nx,ny,nz) ;
+    //var test2 = JSON.parse(testStr);
+    
     Plotly.relayout(document.getElementById('myDiv'), newScene);
+  // }
     
 }
 // Draw dots
