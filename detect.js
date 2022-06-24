@@ -1,6 +1,6 @@
 // element selectors
 const sourceVideo = document.querySelector('video');
-const drawCanvas = document.querySelector('canvas');
+const drawCanvas = document.querySelector('canvas#plotfoncier');
 const loader = document.getElementById('loader');
 
 
