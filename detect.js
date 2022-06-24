@@ -1,14 +1,46 @@
+// element selectors
+const sourceVideo = document.querySelector('video');
+const drawCanvas = document.querySelector('canvas');
+const loader = document.getElementById('loader');
+
+
+//=== CAMERA ACCESS ===
+function handleSuccess(stream) {
+    const video = document.querySelector('video');
+    console.log(`Using video device: ${stream.getVideoTracks()[0].label}`);
+    video.srcObject = stream;
+}
+
+function handleError(error) {
+    if (error.name === 'ConstraintNotSatisfiedError') {
+        console.error(`The resolution requested is not supported by your device.`);
+    } else if (error.name === 'PermissionDeniedError') {
+        console.error("User denied access to media devices");
+    }
+    console.error(`getUserMedia error: ${error.name}`, error);
+}
+
+document.querySelector('#start').addEventListener('click', () => {
+    document.querySelector('#content').hidden = true;
+    loader.style.display = "block";
+
+    // Fix constraints to 640 px width; higher resolutions are more accurate but slower
+    navigator.mediaDevices.getUserMedia({ video: { width: 640 }, audio: false })
+        .then(handleSuccess)
+        .catch(handleError)
+});
+
+
 // Canvas setup
 const drawCtx = drawCanvas.getContext('2d');
 
 // Global flags
-const flipHorizontal = true;
+let flipHorizontal = true;
 let stopPrediction = false;
-let isPlaying = false,
-    gotMetadata = false;
-let firstRun = true;
-let lastDistanceToHead = -1
-let savedDistanceToHead = 1
+let isPlaying = false;
+let gotMetadata = false;
+let lastDistanceToHead = -1;
+let savedDistanceToHead = 1;
 
 // check if metadata is ready - we need the sourceVideo size
 sourceVideo.onloadedmetadata = () => {
@@ -35,8 +67,6 @@ function load(multiplier = 0.75, stride = 16) {
     drawCanvas.width = sourceVideo.videoWidth;
     drawCanvas.height = sourceVideo.videoHeight;
 
-    userMessage.innerText = "Waiting for Machine Learning model to load...";
-
     console.log(`loading BodyPix with multiplier ${multiplier} and stride ${stride}`);
 
     bodyPix.load({ multiplier: multiplier, stride: stride, quantBytes: 4 })
@@ -45,14 +75,11 @@ function load(multiplier = 0.75, stride = 16) {
 }
 
 async function predictLoop(net) {
-
     stopPrediction = false;
 
     let lastFaceArray = new Int32Array(sourceVideo.width * sourceVideo.height);
-    let alerts = 0;
-    let alertTimeout = false;
 
-    enableDashboard(firstRun); // Show the dashboard
+    loader.style.display = "none";
 
     // Timer to update the face mask
     let updateFace = true;
@@ -61,7 +88,6 @@ async function predictLoop(net) {
     }, 1000);
 
     while (isPlaying && !stopPrediction) {
-
         // BodyPix setup
         const segmentPersonConfig = {
             flipHorizontal: flipHorizontal,     // Flip for webcam
@@ -71,12 +97,10 @@ async function predictLoop(net) {
         };
         const segmentation = await net.segmentPersonParts(sourceVideo, segmentPersonConfig);
 
-
         const faceThreshold = 0.9;
         const touchThreshold = 0.01;
 
         const numPixels = segmentation.width * segmentation.height;
-
 
         // skip if noting is there
         if (segmentation.allPoses[0] === undefined) {
@@ -114,7 +138,6 @@ async function predictLoop(net) {
             let score = 0;
 
             for (let x = 0; x < lastFaceArray.length; x++) {
-
                 // Count the number of face pixels
                 if (lastFaceArray[x] > -1)
                     facePixels++;
@@ -129,34 +152,17 @@ async function predictLoop(net) {
             let touchScore = touchingCheck(multiFaceArray, multiHandArray, 10);
             score += touchScore;
 
-
             // Update the old face according to the timer
             if (updateFace)
                 lastFaceArray = faceArray;
-
-            updateStats(alertTimeout);
-
-            // Handle alerts
-            if (score > facePixels * touchThreshold && !alertTimeout) {
-
-                alertTimeout = true;
-
-                setTimeout(() => {
-                    console.log("resuming alerts");
-                    alertTimeout = false;
-                }, alertTimeoutEntry.value * 1000)
-            }
-
         }
-
     }
-
 }
 
 // Checks if there is a face pixel above, below, left or right to this pixel
 function touchingCheck(matrix1, matrix2, padding) {
     let count = 0;
-    for (let y = padding; y < matrix1.length - padding; y++)
+    for (let y = padding; y < matrix1.length - padding; y++) {
         for (let x = padding; x < matrix1[0].length - padding; x++) {
             if (matrix1[y][x] > -1) {
                 for (let p = 0; p < padding; p++) {
@@ -168,50 +174,23 @@ function touchingCheck(matrix1, matrix2, padding) {
                 }
             }
         }
+    }
     return count
 }
 
 // Use the bodyPix draw API's
 function draw(personSegmentation) {
-
-    if (showMaskToggle.checked) {
-        let targetSegmentation = personSegmentation;
-
-        // Draw a mask of the body segments - useful for debugging
-
-        // Just show the face and hand parts
-        targetSegmentation.data = personSegmentation.data.map(val => {
-            if (val !== 0 && val !== 1 && val !== 10 && val !== 11)
-                return -1;
-            else
-                return val;
-        });
-
-        const coloredPartImage = bodyPix.toColoredPartMask(targetSegmentation);
-        const opacity = 0.7;
-        const maskBlurAmount = 0;
-        bodyPix.drawMask(
-            drawCanvas, sourceVideo, coloredPartImage, opacity, maskBlurAmount,
-            flipHorizontal);
-
-    }
-
     // drawMask clears the canvas, drawKeypoints doesn't
-    if (showMaskToggle.checked === false) {
-        // bodyPix.drawMask redraws the canvas. Clear with not
-        drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-    }
+    // bodyPix.drawMask redraws the canvas. Clear with not
+    drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 
     // Show dots from pose detection
-    if (showPointsToggle.checked) {
-        personSegmentation.allPoses.forEach(pose => {
-            if (flipHorizontal) {
-                pose = bodyPix.flipPoseHorizontal(pose, personSegmentation.width);
-            }
-            drawKeypoints(pose.keypoints, 0.1, drawCtx);
-        });
-    }
-
+    personSegmentation.allPoses.forEach(pose => {
+        if (flipHorizontal) {
+            pose = bodyPix.flipPoseHorizontal(pose, personSegmentation.width);
+        }
+        drawKeypoints(pose.keypoints, 0.1, drawCtx);
+    });
 }
 
 var refScene = {
@@ -222,13 +201,12 @@ var refScene = {
             up: { x: 0, y: 0, z: 1 }
         }
     },
-}
+};
 
 
+var lookerRef = { inited: false, leftEar: { x: 0, y: 0 }, rightEar: { x: 0, y: 0 }, up: { x: 0, y: 0, z: 1 }, };
 
-var lookerRef = { inited: false, leftEar: { x: 0, y: 0 }, rightEar: { x: 0, y: 0 }, up: { x: 0, y: 0, z: 1 }, }
-
-var lookerMod = { inited: false, leftEar: { x: 0, y: 0 }, rightEar: { x: 0, y: 0 }, up: { x: 0, y: 0, z: 0 }, }
+var lookerMod = { inited: false, leftEar: { x: 0, y: 0 }, rightEar: { x: 0, y: 0 }, up: { x: 0, y: 0, z: 0 }, };
 
 function dist(p1, p2) {
     var a = p1.x - p2.x;
@@ -237,10 +215,10 @@ function dist(p1, p2) {
 }
 function toDegrees(rads) {
     return rads * 180 / Math.PI;
-};
+}
 function toRads(degs) {
     return (degs / 180) * Math.PI;
-};
+}
 function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     var rEye = null
     var lEye = null
@@ -282,27 +260,19 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
             ctx.arc(x, y, 4, 0, 2 * Math.PI);
             ctx.fillStyle = color;
             ctx.fill();
-
         }
     }
-
-
-
 
     // exit if not both eyes
     if ((rEye === null) || (lEye === null) || (rEar === null) || (lEar === null)) {
         return;
     }
 
-
-
-    // normalize both eyes positions 
+    // normalize both eyes positions
     rEar.x = rEar.x / sourceVideo.videoWidth;
     rEar.y = rEar.y / sourceVideo.videoHeight;
     lEar.x = lEar.x / sourceVideo.videoWidth;
     lEar.y = lEar.y / sourceVideo.videoHeight;
-
-
 
 
     // if no ref looker, looker is set and continue
@@ -333,12 +303,10 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
         lastDistanceToHead = distanceToHead * 0.9 + lastDistanceToHead * 0.1;
         if (Math.abs(lastDistanceToHead - savedDistanceToHead) > 0.005) {
             savedDistanceToHead = lastDistanceToHead;
-
         }
     }
 
     var adjustedDistance = 1// savedDistanceToHead
-
 
     var nx = adjustedDistance * Math.cos(xEarsInAngle)
     var ny = adjustedDistance * Math.sin(xEarsInAngle)
@@ -355,10 +323,6 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
         },
     }
     // update the layout
-    var testStr = "%s" % JSON.stringify(fig.layout.scene.camera)
-    //var test = JSON.parse()
-
-    //var test2 = JSON.parse(testStr);
 
     Plotly.relayout(document.getElementById('myDiv'), newScene);
     // }
