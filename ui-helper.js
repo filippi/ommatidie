@@ -53,7 +53,7 @@ document.querySelector('#start').addEventListener('click', () => {
 
     document.querySelector("div#usageNoteSide").innerHTML = document.querySelector('#usageNoteMain').innerHTML;
     // Fix constraints to 640 px width; higher resolutions are more accurate but slower
-    navigator.mediaDevices.getUserMedia({video: {width: 640}, audio: false})
+    navigator.mediaDevices.getUserMedia({ video: { width: 640 }, audio: false })
         .then(handleSuccess)
         .catch(handleError)
 
@@ -65,7 +65,7 @@ document.querySelector('#start').addEventListener('click', () => {
 resetButton.addEventListener('click', () => window.location.reload());
 
 // Initialize the dashboard
-function enableDashboard(initial=false) {
+function enableDashboard(initial = false) {
 
     drawCanvas.style.display = "block";
     userMessage.innerText = "Monitor running";
@@ -74,7 +74,7 @@ function enableDashboard(initial=false) {
 
     startTime = new Date().getTime();
 
-    if(initial){
+    if (initial) {
         fastButton.disabled = false;
         normalButton.disabled = false;
         slowerButton.disabled = false;
@@ -107,7 +107,7 @@ function updateStats(touched) {
 
 // Beep tone
 function beep(tone, duration) {
-  
+
 }
 
 

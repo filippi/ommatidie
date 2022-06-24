@@ -8,7 +8,7 @@ let isPlaying = false,
     gotMetadata = false;
 let firstRun = true;
 let lastDistanceToHead = -1
-let savedDistanceToHead= 1
+let savedDistanceToHead = 1
 
 // check if metadata is ready - we need the sourceVideo size
 sourceVideo.onloadedmetadata = () => {
@@ -27,7 +27,7 @@ sourceVideo.onplaying = () => {
     }
 };
 
-function load(multiplier=0.75, stride=16) {
+function load(multiplier = 0.75, stride = 16) {
     sourceVideo.width = sourceVideo.videoWidth;
     sourceVideo.height = sourceVideo.videoHeight;
 
@@ -39,7 +39,7 @@ function load(multiplier=0.75, stride=16) {
 
     console.log(`loading BodyPix with multiplier ${multiplier} and stride ${stride}`);
 
-    bodyPix.load({multiplier: multiplier, stride: stride, quantBytes: 4})
+    bodyPix.load({ multiplier: multiplier, stride: stride, quantBytes: 4 })
         .then(net => predictLoop(net))
         .catch(err => console.error(err));
 }
@@ -92,7 +92,7 @@ async function predictLoop(net) {
         let nose = segmentation.allPoses[0].keypoints[0].score > faceThreshold;
         let leftEye = segmentation.allPoses[0].keypoints[1].score > faceThreshold;
         let rightEye = segmentation.allPoses[0].keypoints[2].score > faceThreshold;
-       
+
         // Check for hands if there is a nose or eyes
         if (nose && (leftEye || rightEye)) {
 
@@ -138,7 +138,7 @@ async function predictLoop(net) {
 
             // Handle alerts
             if (score > facePixels * touchThreshold && !alertTimeout) {
- 
+
                 alertTimeout = true;
 
                 setTimeout(() => {
@@ -214,30 +214,32 @@ function draw(personSegmentation) {
 
 }
 
-var refScene = {scene:{
-                              camera: {
-                              center: { x: 0, y: 0, z: 0 }, 
-                              eye: { x: 0, y: 0, z: 0 }, 
-                               up: { x: 0, y: 0, z: 1 }
-                                }
-                            },}
+var refScene = {
+    scene: {
+        camera: {
+            center: { x: 0, y: 0, z: 0 },
+            eye: { x: 0, y: 0, z: 0 },
+            up: { x: 0, y: 0, z: 1 }
+        }
+    },
+}
 
 
 
-var lookerRef = {inited: false, leftEar: { x: 0, y: 0}, rightEar: { x: 0, y: 0}, up: { x: 0, y: 0, z: 1 }, }
+var lookerRef = { inited: false, leftEar: { x: 0, y: 0 }, rightEar: { x: 0, y: 0 }, up: { x: 0, y: 0, z: 1 }, }
 
-var lookerMod = {inited: false, leftEar: { x: 0, y: 0}, rightEar: { x: 0, y: 0}, up: { x: 0, y: 0, z: 0 }, }
+var lookerMod = { inited: false, leftEar: { x: 0, y: 0 }, rightEar: { x: 0, y: 0 }, up: { x: 0, y: 0, z: 0 }, }
 
-function dist( p1, p2 ){
+function dist(p1, p2) {
     var a = p1.x - p2.x;
     var b = p1.y - p2.y;
-    return Math.sqrt( a*a + b*b );
+    return Math.sqrt(a * a + b * b);
 }
 function toDegrees(rads) {
-  return rads * 180 / Math.PI;
+    return rads * 180 / Math.PI;
 };
 function toRads(degs) {
-  return (degs / 180) * Math.PI;
+    return (degs / 180) * Math.PI;
 };
 function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     var rEye = null
@@ -247,7 +249,7 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     var rEar = null
     var lEar = null
     var dEars = 0.1 // typical distance between human eyes
- 
+
     var camFOV = toRads(50)
 
     // find right eye, left eye, right hand, left hand
@@ -255,110 +257,112 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
         const keypoint = keypoints[i];
 
         if (keypoint.score > minConfidence) {
-                if (keypoint.part === 'rightEye'){
-                  rEar = keypoint.position;
-                 }
-                if (keypoint.part === 'leftEye'){
-                  lEar   = keypoint.position;
-                 }
-                if (keypoint.part === 'rightHand'){
-                  rHand = keypoint.position;
-                 }
-                if (keypoint.part === 'leftHand'){
-                  lHand = keypoint.position;
-                 }
-                if (keypoint.part === 'rightEar'){
-                  rEye = keypoint.position;
-                 }
-                if (keypoint.part === 'leftEar'){
-                  lEye = keypoint.position;
-                 }
-            
-        const {y, x} = keypoint.position;
-        
-        ctx.beginPath();
-        ctx.arc(x, y, 4, 0, 2 * Math.PI);
-        ctx.fillStyle = color;
-        ctx.fill();
+            if (keypoint.part === 'rightEye') {
+                rEar = keypoint.position;
+            }
+            if (keypoint.part === 'leftEye') {
+                lEar = keypoint.position;
+            }
+            if (keypoint.part === 'rightHand') {
+                rHand = keypoint.position;
+            }
+            if (keypoint.part === 'leftHand') {
+                lHand = keypoint.position;
+            }
+            if (keypoint.part === 'rightEar') {
+                rEye = keypoint.position;
+            }
+            if (keypoint.part === 'leftEar') {
+                lEye = keypoint.position;
+            }
+
+            const { y, x } = keypoint.position;
+
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, 2 * Math.PI);
+            ctx.fillStyle = color;
+            ctx.fill();
 
         }
     }
 
 
-   
-    
+
+
     // exit if not both eyes
-    if((rEye === null) || (lEye === null)||(rEar === null) || (lEar === null)){
+    if ((rEye === null) || (lEye === null) || (rEar === null) || (lEar === null)) {
         return;
     }
 
 
-    
+
     // normalize both eyes positions 
-    rEar.x = rEar.x/sourceVideo.videoWidth;
-    rEar.y = rEar.y/sourceVideo.videoHeight;
-    lEar.x = lEar.x/sourceVideo.videoWidth;
-    lEar.y = lEar.y/sourceVideo.videoHeight;
-    
-     
-   
-    
+    rEar.x = rEar.x / sourceVideo.videoWidth;
+    rEar.y = rEar.y / sourceVideo.videoHeight;
+    lEar.x = lEar.x / sourceVideo.videoWidth;
+    lEar.y = lEar.y / sourceVideo.videoHeight;
+
+
+
+
     // if no ref looker, looker is set and continue
-    if (lookerRef.inited === false) {   
-      lookerRef.leftEar.x = lEar.x;
-      lookerRef.rightEar.x = rEar.x;  
-      lookerRef.leftEar.y = lEar.y;
-      lookerRef.rightEar.y = rEar.y;
+    if (lookerRef.inited === false) {
+        lookerRef.leftEar.x = lEar.x;
+        lookerRef.rightEar.x = rEar.x;
+        lookerRef.leftEar.y = lEar.y;
+        lookerRef.rightEar.y = rEar.y;
         //lookerRef.inited = true;
     }
-    
+
     // compute distance = distance between Ears
-    var interEars = dist(lookerRef.leftEar,lookerRef.rightEar);
-    var iEarsInAngle = interEars*camFOV
-    var zEarsInAngle = (((lEar.y+rEar.y)/2)*camFOV)+(Math.PI/2)-(camFOV/2)
-    var xEarsInAngle = (((lEar.x+rEar.x)/2)*camFOV)+(Math.PI/2)-(camFOV/2)
-    
-    distanceToHead = ((dEars/2)/Math.tan(iEarsInAngle))
-   // console.log(distanceToHead);
+    var interEars = dist(lookerRef.leftEar, lookerRef.rightEar);
+    var iEarsInAngle = interEars * camFOV
+    var zEarsInAngle = (((lEar.y + rEar.y) / 2) * camFOV) + (Math.PI / 2) - (camFOV / 2)
+    var xEarsInAngle = (((lEar.x + rEar.x) / 2) * camFOV) + (Math.PI / 2) - (camFOV / 2)
+
+    distanceToHead = ((dEars / 2) / Math.tan(iEarsInAngle))
+    // console.log(distanceToHead);
     //  now compute the face location in space in meters with 0 being the screen center .. dampen the distance to the screen as should not move fast. Given the initialisation is 0.5 meters, 
 
     fig = document.getElementById('myDiv');
-      if (lastDistanceToHead == -1){
-          lastDistanceToHead = distanceToHead ;
-      }
-       
-    else{
-        lastDistanceToHead = distanceToHead*0.9 + lastDistanceToHead*0.1;
-        if (Math.abs(lastDistanceToHead-savedDistanceToHead)>0.005){
+    if (lastDistanceToHead == -1) {
+        lastDistanceToHead = distanceToHead;
+    }
+
+    else {
+        lastDistanceToHead = distanceToHead * 0.9 + lastDistanceToHead * 0.1;
+        if (Math.abs(lastDistanceToHead - savedDistanceToHead) > 0.005) {
             savedDistanceToHead = lastDistanceToHead;
-            
+
         }
     }
-    
+
     var adjustedDistance = 1// savedDistanceToHead
-    
- 
-    var  nx = adjustedDistance * Math.cos(xEarsInAngle)
+
+
+    var nx = adjustedDistance * Math.cos(xEarsInAngle)
     var ny = adjustedDistance * Math.sin(xEarsInAngle)
     var nz = adjustedDistance * Math.cos(zEarsInAngle)
-   //if(fig.layout.scene.camera != null){
-       var newScene = {scene:{
-                              camera: {
-                              center: { x: 0, y: 0, z: 0 },//fig.layout.scene.camera.center, 
-                              eye: { x: nx, y: ny, z: nz }, 
-                                  //eye: { x:2, y:  3*(1-interEyes*lookerRef.leftEye.x), z: 3*(1-interEyes*lookerRef.leftEye.y )}, 
-                               up: { x: 0, y: 0, z: 1 }
-                                }
-                            },}
+    //if(fig.layout.scene.camera != null){
+    var newScene = {
+        scene: {
+            camera: {
+                center: { x: 0, y: 0, z: 0 },//fig.layout.scene.camera.center, 
+                eye: { x: nx, y: ny, z: nz },
+                //eye: { x:2, y:  3*(1-interEyes*lookerRef.leftEye.x), z: 3*(1-interEyes*lookerRef.leftEye.y )}, 
+                up: { x: 0, y: 0, z: 1 }
+            }
+        },
+    }
     // update the layout
-    var testStr = "%s"%JSON.stringify(fig.layout.scene.camera)
+    var testStr = "%s" % JSON.stringify(fig.layout.scene.camera)
     //var test = JSON.parse()
-  
+
     //var test2 = JSON.parse(testStr);
-    
+
     Plotly.relayout(document.getElementById('myDiv'), newScene);
-  // }
-    
+    // }
+
 }
 // Draw dots
 
