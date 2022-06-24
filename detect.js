@@ -32,6 +32,7 @@ document.querySelector('#start').addEventListener('click', () => {
 
 class PersonCanvas {
     constructor() {
+        this.controls = document.querySelector('#controls')
         this.canvas = document.querySelector('canvas#person')
         this.ctx = this.canvas.getContext('2d');
 
@@ -45,17 +46,26 @@ class PersonCanvas {
     }
 
     show() {
-        this.canvas.style.display = "block"
+        this.controls.style.display = "block"
         this._drawFixedPart()
         this.updatePositions()
+
+        // Init click on buttons
+        document.querySelectorAll("#buttons > button").forEach((e) => {
+            e.addEventListener('click', (s) => {
+                console.log("Clicked on", e.innerHTML)
+            });
+        })
     }
 
     hide() {
-        this.canvas.style.display = "none"
+        this.controls.style.display = "none"
     }
 
     updatePositions(position) {
         if (!position) return;
+
+        this._checkInteraction(position);
 
         const { leftHand, rightHand } = position;
         // const leftHand = {x: 0.2, y: 0.2}
@@ -63,6 +73,9 @@ class PersonCanvas {
 
         const lh = this._projectCoords(leftHand)
         const rh = this._projectCoords(rightHand)
+
+        this._checkInteraction(lh);
+        this._checkInteraction(rh);
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this._drawFixedPart();
@@ -73,6 +86,14 @@ class PersonCanvas {
         this.ctx.moveTo(this.centerHead.x, 230)
         this.ctx.lineTo(rh.x, rh.y);
         this.ctx.stroke();
+    }
+
+    _checkInteraction(coords) {
+        const { x, y } = coords;
+        if (y < 40) {
+            const index = parseInt(x / 100)
+            document.querySelectorAll("#buttons > button")[index].click()
+        }
     }
 
     _projectCoords(obj) {

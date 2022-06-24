@@ -121,11 +121,31 @@ div#myDiv{
     }
 }
 
-canvas#person {
+#controls {
     display: none;
     width: 400px;
     height: 500px;
+    position: absolute;
+    z-index: 10000;
+    top: 25px;
+    right: 0;
+}
+
+#controls > #buttons {
+    display: flex;
+}
+
+#buttons button, #buttons a {
+    width: 25%;
+    height: 40px;
+    background: rgba(255,255,255,0.2);
     border: 1px solid grey;
+    color: white;
+}
+
+canvas#person {
+    width: 400px;
+    height: 500px;
     position: absolute;
     z-index: 10000;
     top: 0;
