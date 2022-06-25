@@ -2,6 +2,7 @@
 const sourceVideo = document.querySelector('video');
 const drawCanvas = document.querySelector('canvas#plotfoncier');
 const loader = document.getElementById('loader');
+const infotext = document.getElementById('infotext');
 
 //=== CAMERA ACCESS ===
 function handleSuccess(stream) {
@@ -28,6 +29,12 @@ document.querySelector('#start').addEventListener('click', () => {
         .then(handleSuccess)
         .catch(handleError)
 });
+
+
+// Change information text
+function setInfoText(info) {
+    infotext.innerHTML = info;
+}
 
 
 class PersonCanvas {

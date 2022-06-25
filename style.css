@@ -151,3 +151,14 @@ canvas#person {
     top: 0;
     right: 0;
 }
+
+#infotext {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    color: white;
+    height: 400px;
+    padding-left: 30px;
+}
