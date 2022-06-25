@@ -19,6 +19,25 @@ d3.csv('https://raw.githubusercontent.com/filippi/ommatidie/main/scatterSetFonci
         },
         type: 'scatter3d'
     };
+    var trace2 = {
+        y: unpack(rows, 'latitude'),
+        x: unpack(rows, 'longitude'),
+        z: unpack(rows, 'valeur_fonciere'),
+        mode: 'markers',
+        marker: {
+            size: 10,
+            line: {
+                color: 'rgba(217, 50, 50, 0.14)',
+                width: 0.1
+            },
+            opacity: 0.4
+        },
+        type: 'scatter3d'
+    };
+    Global.trace2 = trace2;
+    Global.trace1 = trace1;
+    
+
 
 
 

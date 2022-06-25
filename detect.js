@@ -284,20 +284,6 @@ function draw(personSegmentation) {
     });
 }
 
-var refScene = {
-    scene: {
-        camera: {
-            center: { x: 0, y: 0, z: 0 },
-            eye: { x: 0, y: 0, z: 0 },
-            up: { x: 0, y: 0, z: 1 }
-        }
-    },
-};
-
-
-var lookerRef = { inited: false, leftEar: { x: 0, y: 0 }, rightEar: { x: 0, y: 0 }, up: { x: 0, y: 0, z: 1 }, };
-
-var lookerMod = { inited: false, leftEar: { x: 0, y: 0 }, rightEar: { x: 0, y: 0 }, up: { x: 0, y: 0, z: 0 }, };
 
 function dist(p1, p2) {
     var a = p1.x - p2.x;
@@ -310,6 +296,7 @@ function toDegrees(rads) {
 function toRads(degs) {
     return (degs / 180) * Math.PI;
 }
+var changeDatasetAllowed = true;
 function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     var rEye = null
     var lEye = null
@@ -375,23 +362,15 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     var buddyMove =  { leftHand: { x: lHandx, y: lHandy }, rightHand: { x: rHandx, y: rHandy }};
     personCanvas.updatePositions(buddyMove);
  
-    // if no ref looker, looker is set and continue
-    if (lookerRef.inited === false) {
-        lookerRef.leftEar.x = lEar.x;
-        lookerRef.rightEar.x = rEar.x;
-        lookerRef.leftEar.y = lEar.y;
-        lookerRef.rightEar.y = rEar.y;
-        //lookerRef.inited = true;
-    }
-
+ 
     // compute distance = distance between Ears
-    var interEars = dist(lookerRef.leftEar, lookerRef.rightEar);
+    var interEars = dist(lEar, rEar);
     var iEarsInAngle = interEars * camFOV
     var zEarsInAngle = (((lEar.y + rEar.y) / 2) * camFOV) + (Math.PI / 2) - (camFOV / 2)
     var xEarsInAngle = (((lEar.x + rEar.x) / 2) * camFOV) + (Math.PI / 2) - (camFOV / 2)
 
     distanceToHead = ((dEars / 2) / Math.tan(iEarsInAngle))
-    // console.log(distanceToHead);
+    
     //  now compute the face location in space in meters with 0 being the screen center .. dampen the distance to the screen as should not move fast. Given the initialisation is 0.5 meters, 
 
     fig = document.getElementById('myDiv');
@@ -424,9 +403,25 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     }
     // update the layout
 
-    // console.log(fig.layout.scene?.camera)
+    if(savedDistanceToHead>1.1 && changeDatasetAllowed){
+        changeDatasetAllowed = false;
+        var graphDiv= document.getElementById('myDiv')
+        graphDiv.data[0].x = Global.trace2.x ;
+        graphDiv.data[0].y = Global.trace2.y ;
+        Plotly.redraw(graphDiv);
+    }
+    
+    if(savedDistanceToHead<1.1 && !changeDatasetAllowed){
+        changeDatasetAllowed = true;
+        var graphDiv= document.getElementById('myDiv')
+        graphDiv.data[0].x = Global.trace1.y ;
+        graphDiv.data[0].y = Global.trace1.x ;
+        Plotly.redraw(graphDiv);
+    }
 
     Plotly.relayout(document.getElementById('myDiv'), newScene);
+   // Plotly.relayout(document.getElementById('myDiv'), newScene);
+    
     // }
 }
 // Draw dots
