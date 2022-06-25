@@ -46,7 +46,7 @@ class PersonCanvas {
         this.ctx.strokeStyle = "#666666";
         this.ctx.lineWidth = 5;
 
-        this.centerHead = {
+        this.centerRef = {
             x: this.canvas.width / 2,
             y: 150
         }
@@ -54,7 +54,7 @@ class PersonCanvas {
 
     show() {
         this.controls.style.display = "block"
-        this._drawFixedPart()
+        // this._drawFixedPart()
         this.updatePositions()
 
         // Init click on buttons
@@ -74,24 +74,57 @@ class PersonCanvas {
 
         this._checkInteraction(position);
 
-        const { leftHand, rightHand } = position;
-        // const leftHand = {x: 0.2, y: 0.2}
-        // const rightHand = {x: 0.7, y: 0.7}
+        const lw = this._projectCoords(position.leftWrist)
+        const rw = this._projectCoords(position.rightWrist)
+        const ls = this._projectCoords(position.leftShoulder)
+        const rs = this._projectCoords(position.rightShoulder)
+        const le = this._projectCoords(position.leftElbow)
+        const re = this._projectCoords(position.rightElbow)
 
-        const lh = this._projectCoords(leftHand)
-        const rh = this._projectCoords(rightHand)
-
-        this._checkInteraction(lh);
-        this._checkInteraction(rh);
+        this._checkInteraction(lw);
+        this._checkInteraction(rw);
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this._drawFixedPart();
 
+        // Head
         this.ctx.beginPath();
-        this.ctx.moveTo(this.centerHead.x, 230)
-        this.ctx.lineTo(lh.x, lh.y);
-        this.ctx.moveTo(this.centerHead.x, 230)
-        this.ctx.lineTo(rh.x, rh.y);
+        this.ctx.arc(this.centerRef.x, this.centerRef.y, 50, 0, Math.PI * 2)
+        this.ctx.stroke();
+
+        // Head to bottom
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.centerRef.x, 200);
+        this.ctx.lineTo(this.centerRef.x, 300);
+        this.ctx.stroke();
+
+        // Shoulders
+        this.ctx.beginPath();
+        this.ctx.moveTo(ls.x, ls.y);
+        this.ctx.lineTo(rs.x, rs.y);
+        this.ctx.stroke();
+
+        // Right elbow
+        this.ctx.beginPath();
+        this.ctx.moveTo(rs.x, rs.y)
+        this.ctx.lineTo(re.x, re.y);
+        this.ctx.stroke();
+
+        // Left elbow
+        this.ctx.beginPath();
+        this.ctx.moveTo(ls.x, ls.y)
+        this.ctx.lineTo(le.x, le.y);
+        this.ctx.stroke();
+
+        // Right hand
+        this.ctx.beginPath();
+        this.ctx.moveTo(re.x, re.y)
+        this.ctx.lineTo(rw.x, rw.y);
+        this.ctx.stroke();
+
+        // Left hand
+        this.ctx.beginPath();
+        this.ctx.moveTo(le.x, le.y)
+        this.ctx.lineTo(lw.x, lw.y);
         this.ctx.stroke();
     }
 
@@ -104,25 +137,13 @@ class PersonCanvas {
     }
 
     _projectCoords(obj) {
-        const refX = this.centerHead.x;
-        const refY = this.centerHead.y;
+        const refX = this.centerRef.x;
+        const refY = this.centerRef.y;
 
         return {
             x: obj.x * refX / 0.5,
             y: obj.y * refY / 0.5
         };
-    }
-
-    _drawFixedPart() {
-        this.ctx.beginPath();
-        this.ctx.arc(this.centerHead.x, this.centerHead.y, 50, 0, Math.PI * 2)
-        this.ctx.moveTo(this.centerHead.x, 200);
-        this.ctx.lineTo(this.centerHead.x, 300);
-        this.ctx.lineTo(this.centerHead.x + this.centerHead.x / 3, 400);
-        this.ctx.moveTo(this.centerHead.x, 300);
-        this.ctx.lineTo(this.centerHead.x - this.centerHead.x / 3, 400);
-
-        this.ctx.stroke();
     }
 }
 
@@ -305,13 +326,9 @@ function toRads(degs) {
 }
 var changeDatasetAllowed = true;
 function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
-    var rEye = null
-    var lEye = null
-    var rHand = null
-    var lHand = null
-    var rEar = null
-    var lEar = null
     var dEars = 0.1 // typical distance between human eyes
+
+    var data = {}
 
     var camFOV = toRads(50)
     // find right eye, left eye, right hand, left hand
@@ -319,28 +336,16 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
         const keypoint = keypoints[i];
 
         if (keypoint.score > minConfidence) {
-            if (keypoint.part === 'rightEye') {
-                rEar = keypoint.position;
-            }
-            if (keypoint.part === 'leftEye') {
-                lEar = keypoint.position;
-            }
-            if (keypoint.part === 'rightWrist') {
-                rHand = keypoint.position;
-                  
-            }
-            if (keypoint.part === 'leftWrist') {
-                lHand = keypoint.position;
-            }
-            if (keypoint.part === 'rightEar') {
-                rEye = keypoint.position;
-            }
-            if (keypoint.part === 'leftEar') {
-                lEye = keypoint.position;
-            }
- 
+            data[keypoint.part] = keypoint.position;
         }
     }
+
+    rEar = data['rightEye'] ?? null
+    lEar = data['leftEye'] ?? null
+    rHand = data['rightWrist'] ?? null
+    lHand = data['leftWrist'] ?? null
+    rEye = data['rightEar'] ?? null
+    lEye = data['leftEar'] ?? null
 
     // exit if not both eyes
     if ((rEye === null) || (lEye === null) || (rEar === null) || (lEar === null)) {
@@ -352,24 +357,35 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     rEar.y = rEar.y / sourceVideo.videoHeight;
     lEar.x = lEar.x / sourceVideo.videoWidth;
     lEar.y = lEar.y / sourceVideo.videoHeight;
-    var lHandx = 0.5
-    var lHandy = 0.5
-    var rHandx = 0.5
-    var rHandy = 0.5
-    
-    if (lHand != null){
-        lHandx = lHand.x / sourceVideo.videoWidth;
-        lHandy = lHand.y / sourceVideo.videoHeight;
-    }
-    if (rHand != null){
-        rHandx = rHand.x / sourceVideo.videoWidth;
-        rHandy = rHand.y / sourceVideo.videoHeight; 
-    }
-    
-    var buddyMove =  { leftHand: { x: lHandx, y: lHandy }, rightHand: { x: rHandx, y: rHandy }};
+
+    var buddyMove =  {
+        leftWrist: data['leftWrist'] ? {
+            x: data['leftWrist'].x / sourceVideo.videoWidth,
+            y: data['leftWrist'].y / sourceVideo.videoHeight
+        }: { x: 0.5, y: 0.5 },
+        rightWrist: data['rightWrist'] ? {
+            x: data['rightWrist'].x / sourceVideo.videoWidth,
+            y: data['rightWrist'].y / sourceVideo.videoHeight
+        }: { x: 0.5, y: 0.5 },
+        rightShoulder: data['rightShoulder'] ? {
+            x: data['rightShoulder'].x / sourceVideo.videoWidth,
+            y: data['rightShoulder'].y / sourceVideo.videoHeight
+        } : { x: 0.5, y: 0.5 },
+        leftShoulder: data['leftShoulder'] ? {
+            x: data['leftShoulder'].x / sourceVideo.videoWidth,
+            y: data['leftShoulder'].y / sourceVideo.videoHeight
+        } : { x: 0.5, y: 0.5 },
+        rightElbow: data['rightElbow'] ? {
+            x: data['rightElbow'].x / sourceVideo.videoWidth,
+            y: data['rightElbow'].y / sourceVideo.videoHeight
+        } : { x: 0.5, y: 0.5 },
+        leftElbow: data['leftElbow'] ? {
+            x: data['leftElbow'].x / sourceVideo.videoWidth,
+            y: data['leftElbow'].y / sourceVideo.videoHeight
+        } : { x: 0.5, y: 0.5 },
+    };
     personCanvas.updatePositions(buddyMove);
- 
- 
+
     // compute distance = distance between Ears
     var interEars = dist(lEar, rEar);
     var iEarsInAngle = interEars * camFOV
