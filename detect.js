@@ -46,7 +46,7 @@ class PersonCanvas {
         this.ctx.strokeStyle = "#666666";
         this.ctx.lineWidth = 5;
 
-        this.centerRef = {
+        this.ref = {
             x: this.canvas.width / 2,
             y: 150
         }
@@ -81,25 +81,49 @@ class PersonCanvas {
         const le = this._projectCoords(position.leftElbow)
         const re = this._projectCoords(position.rightElbow)
 
+        const nose = this._projectCoords(position.nose)
+        const rEye = this._projectCoords(position.rightEye)
+        const lEye = this._projectCoords(position.leftEye)
+
         this._checkInteraction(lw);
         this._checkInteraction(rw);
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Head
+        const offsetRadius = 5
+        const radius = Math.sqrt(Math.pow(rEye.x - lEye.x, 2) + Math.pow(rEye.y - lEye.y, 2)) + offsetRadius
         this.ctx.beginPath();
-        this.ctx.arc(this.centerRef.x, this.centerRef.y, 50, 0, Math.PI * 2)
+        this.ctx.arc(nose.x, nose.y, radius, 0, Math.PI * 2)
+        this.ctx.stroke();
+
+        // Eyes
+        this.ctx.beginPath();
+        this.ctx.arc(lEye.x, lEye.y, 2, 0, Math.PI * 2)
+        this.ctx.stroke();
+
+        this.ctx.beginPath();
+        this.ctx.arc(rEye.x, rEye.y, 2, 0, Math.PI * 2)
+        this.ctx.stroke();
+
+        // Nose
+        this.ctx.beginPath();
+        this.ctx.moveTo(nose.x, nose.y - 4);
+        this.ctx.lineTo(nose.x, nose.y + 4);
         this.ctx.stroke();
 
         // Head to bottom
+        const topNeck = nose.y + radius
+        const bottomNeck = nose.y + radius + 10
         this.ctx.beginPath();
-        this.ctx.moveTo(this.centerRef.x, 200);
-        this.ctx.lineTo(this.centerRef.x, 300);
+        this.ctx.moveTo(nose.x, topNeck);
+        this.ctx.lineTo(nose.x, topNeck + (radius * 2));
         this.ctx.stroke();
 
         // Shoulders
         this.ctx.beginPath();
         this.ctx.moveTo(ls.x, ls.y);
+        this.ctx.lineTo(nose.x, bottomNeck)
         this.ctx.lineTo(rs.x, rs.y);
         this.ctx.stroke();
 
@@ -137,8 +161,8 @@ class PersonCanvas {
     }
 
     _projectCoords(obj) {
-        const refX = this.centerRef.x;
-        const refY = this.centerRef.y;
+        const refX = this.ref.x;
+        const refY = this.ref.y;
 
         return {
             x: obj.x * refX / 0.5,
@@ -359,6 +383,28 @@ function drawKeypoints(keypoints, minConfidence, ctx, color = 'aqua') {
     lEar.y = lEar.y / sourceVideo.videoHeight;
 
     var buddyMove =  {
+        nose: data['nose'] ? {
+            x: data['nose'].x / sourceVideo.videoWidth,
+            y: data['nose'].y / sourceVideo.videoHeight
+        }: { x: 0.5, y: 0.5 },
+        leftEye: { x: lEar.x, y: lEar.y },
+        rightEye: { x: rEar.x, y: rEar.y },
+        leftEar: data['leftEar'] ? {
+            x: data['leftEar'].x / sourceVideo.videoWidth,
+            y: data['leftEar'].y / sourceVideo.videoHeight
+        }: { x: 0.5, y: 0.5 },
+        rightEar: data['rightEar'] ? {
+            x: data['rightEar'].x / sourceVideo.videoWidth,
+            y: data['rightEar'].y / sourceVideo.videoHeight
+        }: { x: 0.5, y: 0.5 },
+        leftHip: data['leftHip'] ? {
+            x: data['leftHip'].x / sourceVideo.videoWidth,
+            y: data['leftHip'].y / sourceVideo.videoHeight
+        }: { x: 0.5, y: 0.5 },
+        rightHip: data['rightHip'] ? {
+            x: data['rightHip'].x / sourceVideo.videoWidth,
+            y: data['rightHip'].y / sourceVideo.videoHeight
+        }: { x: 0.5, y: 0.5 },
         leftWrist: data['leftWrist'] ? {
             x: data['leftWrist'].x / sourceVideo.videoWidth,
             y: data['leftWrist'].y / sourceVideo.videoHeight
