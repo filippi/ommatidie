@@ -20,10 +20,30 @@ const portoVecchioLayer = getLayerInformation('portoVecchio', 'https://raw.githu
 let flying = false;
 let currentLayerIndex = 0;
 const layers = [
-    { layer: bastiaLayer, center: [9.4244, 42.6935], zoom: 11 },
-    { layer: ajaccioLayer, center: [8.7924, 41.9189], zoom: 11 },
-    { layer: balagneLayer, center: [8.759, 42.5494], zoom: 11 },
-    { layer: portoVecchioLayer, center: [9.275, 41.587], zoom: 11 }
+    {
+        layer: bastiaLayer,
+        center: [9.4244, 42.6935],
+        zoom: 11,
+        text: "Période de Janvier 2017 à Juillet 2017<br>Nombre de transactions: 50<br>Pour un total de 1520012 €<br>Soit environ 156200 pizza"
+    },
+    {
+        layer: ajaccioLayer,
+        center: [8.7924, 41.9189],
+        zoom: 11,
+        text: "Période de Janvier 2017 à Juillet 2017<br>Nombre de transactions: 150<br>Pour un total de 1520012 €<br>Soit environ 156200 pizza"
+    },
+    {
+        layer: balagneLayer,
+        center: [8.759, 42.5494],
+        zoom: 11,
+        text: "Période de Janvier 2017 à Juillet 2017<br>Nombre de transactions: 250<br>Pour un total de 1520012 €<br>Soit environ 156200 pizza"
+    },
+    {
+        layer: portoVecchioLayer,
+        center: [9.275, 41.587],
+        zoom: 11,
+        text: "Période de Janvier 2017 à Juillet 2017<br>Nombre de transactions: 350<br>Pour un total de 1520012 €<br>Soit environ 156200 pizza"
+    }
 ];
 
 map.on('moveend', function(){
@@ -41,9 +61,7 @@ map.once('load', function () {
 
 
 function changeMapLocation(index) {
-
     if (index == currentLayerIndex) return;
-    console.log(index)
 
     flying = true;
 
@@ -57,7 +75,7 @@ function changeMapLocation(index) {
     layer.layer.setProps({visible: true});
     map.flyTo({ center: layer.center, zoom: layer.zoom });
 
-    console.log(layer)
+    setInfoText(layer.text)
 
     currentLayerIndex = index
 }
@@ -67,15 +85,14 @@ function getLayerInformation(layerId, jsonUrl) {
         type: HexagonLayer,
         id: layerId,
         data: jsonUrl,
-        // data: 'https://raw.githubusercontent.com/mastersigat/data/main/csvjson.json',
         getPosition: d => [d.lng, d.lat],
         radius: 500,
         coverage: 0.9,
         extruded: true,
         getElevationValue: points => points.length,
-        elevationRange: [0, 100],
-        elevationScale: 50,
-        getColorWeight: point => point.prix,
+        elevationRange: [0, 5000],
+        elevationScale: 1,
+        getColorWeight: point => point.prixM2,
         colorAggregation: 'MEAN',
         colorScaleType: 'quantile',
         colorRange: [
@@ -83,13 +100,19 @@ function getLayerInformation(layerId, jsonUrl) {
             [161, 215, 106],
             [230, 245, 208],
             [253, 224, 239],
-            [233, 163, 201],
-            [197, 27, 125]
+            [255, 120, 0],
+            [255, 0, 0]
         ],
         pickable: true,
         autoHighlight: true,
         visible: false,
         opacity: 1,
-        // onHover: (info) => { console.log(info) }
+        onHover: (info) => { console.log(info) }
     });
 }
+
+// function showTooltip(info){
+//     const {x, y, object} = info;
+//       if (object) {tooltip.innerHTML = `<h4>${object.points.length} transactions</h4>`;}}
+   
+      
