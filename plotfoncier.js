@@ -1,13 +1,14 @@
+function unpackcsv(rows, key) {
+    return rows.map(function (row) {
+        return row[key];
+    });
+}
+
 d3.csv('https://raw.githubusercontent.com/filippi/ommatidie/main/scatterSetFoncierMOD.csv', function (err, rows) {
-    function unpack(rows, key) {
-        return rows.map(function (row) {
-            return row[key];
-        });
-    }
     var trace1 = {
-        x: unpack(rows, 'latitude'),
-        y: unpack(rows, 'longitude'),
-        z: unpack(rows, 'valeur_fonciere'),
+        x: unpackcsv(rows, 'latitude'),
+        y: unpackcsv(rows, 'longitude'),
+        z: unpackcsv(rows, 'valeur_fonciere'),
         mode: 'markers',
         marker: {
             size: 12,
@@ -20,9 +21,9 @@ d3.csv('https://raw.githubusercontent.com/filippi/ommatidie/main/scatterSetFonci
         type: 'scatter3d'
     };
     var trace2 = {
-        y: unpack(rows, 'latitude'),
-        x: unpack(rows, 'longitude'),
-        z: unpack(rows, 'valeur_fonciere'),
+        y: unpackcsv(rows, 'latitude'),
+        x: unpackcsv(rows, 'longitude'),
+        z: unpackcsv(rows, 'valeur_fonciere'),
         mode: 'markers',
         marker: {
             size: 10,
@@ -60,6 +61,6 @@ d3.csv('https://raw.githubusercontent.com/filippi/ommatidie/main/scatterSetFonci
 
     var graphDiv = document.getElementById('myDiv')
 
-    Plotly.newPlot(graphDiv, data, layout);
+    // Plotly.newPlot(graphDiv, data, layout);
 
 });

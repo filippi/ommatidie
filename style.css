@@ -29,56 +29,12 @@ div#content{
     margin: 10px 10px 0;
     padding: 30px;
 }
-div#dashboard{
-    position: absolute;
-    float: right;
-    top: 0;
-    right: 0;
-    width: 30%;
-    height: 100%;
-    background-color: #546e7a;
-    color: #eceff1;
-}
-div#dashboardContent {
-    padding: 30px;
-}
-div#credits{
-    position: absolute;
-    float: left;
-    bottom: 0;
-    width: 70%;
-    background: #819ca9;
-}
-div#creditContent {
-    padding: 30px;
-}
-div#usageNoteSide{
-    margin-top: 30px;
-}
 p, h4{
     margin-top: 5px;
     margin-bottom: 5px;
 }
-button#start{
-    font-size: x-large;
-    padding: 30px;
-    margin: 20px 0 20px 0;
-    align-self: center;
-    color: #ffffff;
-    background: #00838f;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-}
 button{
     cursor: pointer;
-}
-button#reset{
-    font-size: medium;
-    margin-top: 20px;
-    display: none;
-
 }
 div#loader {
     display: none;
@@ -92,33 +48,9 @@ div#loader {
     height: 120px;
     animation: spin 2s linear infinite;
 }
-div#myDiv{
-    position: absolute;
-    float: left;
-    width: 100%;
-    height: 100%;
-}
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-
-@media (max-width: 1100px) {
-    div#dashboard{
-        position: relative;
-        float: left;
-        height: auto;
-        width: 100%;
-    }
-    video {
-        width: 100%;
-    }
-    div#credits{
-        width: 100%;
-        position: relative;
-        float: left;
-        margin-top: 0;
-    }
 }
 
 #controls {
@@ -127,7 +59,7 @@ div#myDiv{
     height: 500px;
     position: absolute;
     z-index: 10000;
-    top: 25px;
+    top: 0;
     right: 0;
 }
 
@@ -156,9 +88,11 @@ canvas#person {
     position: absolute;
     top: 0;
     left: 0;
-    bottom: 0;
-    margin: auto;
+    font-size: 120%;
+    background-color: rgba(0,0,0,0.2);
+    /* bottom: 0; */
+    /* margin: auto; */
     color: white;
-    height: 400px;
-    padding-left: 30px;
+    /* height: 400px; */
+    padding: 10px;
 }
