@@ -43,7 +43,7 @@ class PersonCanvas {
         this.canvas = document.querySelector('canvas#person')
         this.ctx = this.canvas.getContext('2d');
 
-        this.ctx.strokeStyle = "#666666";
+        this.ctx.strokeStyle = "#0362fc";
         this.ctx.lineWidth = 5;
 
         this.ref = {
@@ -68,7 +68,19 @@ class PersonCanvas {
     hide() {
         this.controls.style.display = "none"
     }
-
+    
+    paintPoint(x,y,pointcolor){
+        var oldColor = this.ctx.strokeStyle
+        var oldSize = this.ctx.lineWidth
+        this.ctx.lineWidth = 10;
+        this.ctx.strokeStyle = pointcolor;
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, 2, 0, Math.PI * 2)
+        this.ctx.stroke();
+        this.ctx.strokeStyle = oldColor
+        this.ctx.lineWidth = oldSize
+    }
+    
     updatePositions(position) {
         if (!position) return;
 
@@ -91,26 +103,22 @@ class PersonCanvas {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Head
-        const offsetRadius = 5
+        const offsetRadius = 8
         const radius = Math.sqrt(Math.pow(rEye.x - lEye.x, 2) + Math.pow(rEye.y - lEye.y, 2)) + offsetRadius
         this.ctx.beginPath();
         this.ctx.arc(nose.x, nose.y, radius, 0, Math.PI * 2)
         this.ctx.stroke();
 
         // Eyes
-        this.ctx.beginPath();
-        this.ctx.arc(lEye.x, lEye.y, 2, 0, Math.PI * 2)
-        this.ctx.stroke();
-
-        this.ctx.beginPath();
-        this.ctx.arc(rEye.x, rEye.y, 2, 0, Math.PI * 2)
-        this.ctx.stroke();
+        
+        this.paintPoint(lEye.x, lEye.y,"#03dffc")
+        this.paintPoint(rEye.x, rEye.y,"#03dffc")
 
         // Nose
+        this.paintPoint(nose.x, nose.y + 3,"#fce303")
         this.ctx.beginPath();
-        this.ctx.moveTo(nose.x, nose.y - 4);
-        this.ctx.lineTo(nose.x, nose.y + 4);
-        this.ctx.stroke();
+        this.ctx.arc(nose.x, nose.y + 4, radius/2, Math.PI, Math.PI*2 , true); 
+        this.ctx.stroke();                
 
         // Head to bottom
         const topNeck = nose.y + radius
@@ -150,6 +158,16 @@ class PersonCanvas {
         this.ctx.moveTo(le.x, le.y)
         this.ctx.lineTo(lw.x, lw.y);
         this.ctx.stroke();
+        
+        // Now  Joints
+        this.paintPoint(lw.x, lw.y,"#03dffc")
+        this.paintPoint(rw.x, rw.y,"#03dffc")
+        this.paintPoint(le.x, le.y,"#03dffc")
+        this.paintPoint(re.x, re.y,"#03dffc")
+        this.paintPoint(ls.x, ls.y,"#03dffc")
+        this.paintPoint(rs.x, rs.y,"#03dffc")
+        
+        
     }
 
     _checkInteraction(coords) {
