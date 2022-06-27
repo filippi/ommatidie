@@ -107,12 +107,6 @@ function getLayerInformation(layerId, jsonUrl) {
         autoHighlight: true,
         visible: false,
         opacity: 1,
-        onHover: (info) => { console.log(info) }
+        // onHover: (info) => { console.log(info) }
     });
 }
-
-// function showTooltip(info){
-//     const {x, y, object} = info;
-//       if (object) {tooltip.innerHTML = `<h4>${object.points.length} transactions</h4>`;}}
-   
-      

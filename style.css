@@ -96,3 +96,36 @@ canvas#person {
     /* height: 400px; */
     padding: 10px;
 }
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+#legend {
+    position: absolute;
+    z-index: 2;
+    left: 20px;
+    bottom: 90px;
+    height: 25px;
+    width: 250px;
+    color: #ffffff;
+    background: linear-gradient(to right, #4d9221, #a1d76a, #e6f5d0, #ffaa00, #ff0000);
+    color: #222;
+    padding: 5px 5px 0px 5px;
+}
+
+#legendLeft {
+    float: left;
+}
+
+#legendRight {
+    float: right;
+}
