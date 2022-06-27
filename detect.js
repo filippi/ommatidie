@@ -371,7 +371,7 @@ function drawKeypoints(keypoints, minConfidence) {
             savedDistanceToHead = lastDistanceToHead;
         }
     }
-    var adjustedZoom = (1.8-savedDistanceToHead)*4+7
+    var adjustedZoom = (1.8-savedDistanceToHead)*4+8
 
     var adjustedDistance = 2// savedDistanceToHead
 

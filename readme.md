@@ -1,53 +1,37 @@
 # Omatidie - Challenge Dataviz 2021 - L'Observateur Observé, Immobilier mais Mobile, suivant le point de vue.
 
-> Valeurs immobilières dans des zones en Corse entre 2017 et 2021
-
-
+> Valeurs immobilières sur zones en Corse depuis 2017
+> Base de données DVF depuis OpenData.corsica
 
 ## L'idée
+La plateforme présente les valeur immobilières issues de la base DVF (Demandes de valeurs foncières). L'idée ici est de proposer un autre regard, mobile, sur l'immobilier, prendre de la hauteur pour constater répartition des richesses et comparer les régions. 
+L'interactivité proposée se veut à la fois intuitive, amusante et espère susciter l'étonnement, c’est donc à la fois un peu « artistique », un peu « technique » et un peu « géomatique » .
+Un bonhomme apparait, c’est vous, devant le miroir de votre écran, après avoir pris conscience que ce mime vous singe, vous pouvez prendre le contrôle de votre dataviz, plus interactive que jamais.
+Cet avatar va alors vous permettre de choisir des zones avec les mains, et de changer de point de vue en regardant votre écran plus près, plus à gauche, plus bas… en changeant de point de vue.
+Ce mime singe avatar n’est autre que vous, l’observateur humain, désormais projeté au milieu de la donnée. Imaginez maintenant que finalement, c’est lui qui vous regarde, tout comme ces valeurs immobilières vous commandent, que vous subissez.
 
-| Variable | Format | Définition | Exemple |
-| :-- | :--: | :-- | --: |
-| date | année-mois-jour | Date du comptage | 2018-01-01 |
-| dpt_09 | entier | Nuitées dans le 09 | 36427 |
-| dpt_11 | entier | Nuitées dans le 11 | 120186 |
-| dpt_xx | entier | Nuitées dans le xx | 567 |
-
-**Attention** : pour les 2018-12-03 et le 2018-08-29, le nombre de nuitées est égal à zéro à cause d’un problème de récupération de données pour ces jours-là.
-
-Le fichier compléments.xlsx contient des informations supplémentaires : codage des départements, codage des pays et liste des évenements.
+## Utilisation
+Cloner le dépôt et ouvrir index.html avec Google Chrome. Marche préférablement avec un ordinateur équipé de webcam située juste au-dessus de l'écran.
 
 ## Technos
+Mapbox.gl -> Fond de carte 3D
+Deck.gl -> Surcouche à Mapbox pour des sources supplémentaires
+Tensorflow.js -> Pour activer des réseaux 
+Bodypix -> Réseau pré-entrainé de détection d'articulations par webcam
 
-| Variable | Format | Définition | Exemple | 
-| :-- | :--: | :-- | --: |
-| date | année-mois-jour | Date du comptage | 2018-01-01 |
-| org | caractères | Département ou pays d’origine des touristes. **Attention** : certains pays peuvent être regroupés. | 01 ou DK+SE+NO |
-| dest | caractères | Département de destination en Occitanie. **Attention** : doit être importé en caractères sinon le département 09 est importé comme 9 | 09 |
-| volume | entier | Nuitées dans le département de destination | 459 |
-| vacances_org | entier | Statut des vacances du département d’origine. 0: pas en vacances, 1: en vacances, 2: non renseigné | 1 |
-| T_midi | entier |  Température °C à midi (solaire) dans la préfecture du département | 25 |
-| meteo | entier | Statut qualificatif de la météo du département de destination : 0: météo très défavorable, 1: météo défavorable, 2: météo correcte, 3: météo favorable, 4: météo idéale | 0 |
-| nb_evt | entier| Nombre d’événements majeurs dans le département de destination | 2 |
+Bodypix permet de trouver la position des articulations, en posant l'hypothèse d'une distance standard entre les yeux on retrouve la distance à l'écran, la position de la tête servant à aluster la perspective, celle des mains, le changement de zones. 
 
+## La ou on a pompé les morceaux de code
+Merci à vous :
+https://facetouchmonitor.com
+https://sites-formations.univ-rennes2.fr/mastersigat/WebMaps/DeckGL_DVF.html
+ 
+## L'équipe
+Roberta Baggio, Oletta, Chercheur(e) de Padoue, il suffit de la prier de trouver, aidée par son Saint-Panda Antoine
+Damien Grandi, voit loin mais mieux de près, intègre mieux que Runge-Kutta
+Jean-Baptiste Filippi, pour décadrer l'équipe, moins il y a limites, moins il y a de chances de trépas
 
-## La ou on a pompé le code
-
-| Variable | Format | Définition | Exemple |
-| :-- | :--: | :-- | --: |
-| dpt | caractère| Département de destination en Occitanie. **Attention** : doit être importé en caractères sinon le département 09 est importé comme 9 | 09 |
-| nom_dpt | caractère | Nom du département| Ariège|
-| pop_dpt | entier| Population du département| 1376737 |
-| Hbgt_collectif | entier | Places (personnes) en hébergement collectif (par jour) | 16248|
-| Hbgt_locatif | entier| Places (personnes) en hébergement locatif (par jour) | 10569 |
-| Hbgt_plein_air |entier| Places (personnes) en hébergement de plein air (par jour) | 11284 |
-| Hbgt_hotel | entier | Places (personnes) en hébergement hôtelier (par jour) | 10231 |
-| Hbgt_total | entier | Places (personnes) total (par jour) | 48332 |
-
-**Attention**:  le nombre de places en hébergement collectif est nul pour le Tarn et Garonne par absence de données.
-
-# L'équipe
-
-Roberta Baggio, Oletta, Chercheur et gère le Panda
-Damien Grandi, fait du Code
-Jean-Baptiste Filippi, 
+## fichiers
+omatidie.py : téléchargement depuis opendata.corsica et formatage des données
+mapprice.js: affichage de carte
+detect.js : détection des mouvement et passages d'évènements UI

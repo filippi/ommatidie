@@ -137,7 +137,7 @@ for area in areas.keys():
             selectedPoints = genSubsetValue(bounds, df, datestr, dates[i+1])
      
             toto = []
-            print(area)
+            print(area,"max",selectedPoints['PRIX_m2'].max()," millions ",selectedPoints['valeur_fonciere'].sum()/1000000," piscines ",selectedPoints['valeur_fonciere'].sum()/(2500*2*1000))
             for index, row in selectedPoints.iterrows():
                 
                 mamaison={}

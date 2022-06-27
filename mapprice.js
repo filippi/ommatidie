@@ -24,25 +24,25 @@ const layers = [
         layer: bastiaLayer,
         center: [9.4244, 42.6935],
         zoom: 11,
-        text: "Période de Janvier 2017 à Juillet 2017<br>Nombre de transactions: 50<br>Pour un total de 1520012 €<br>Soit environ 156200 pizza"
+        text: "<H2>Omatidie-Dataviz 2022</H2><H3>R.Baggio, D.Grandi, J.B.Filippi</H3>Immobilier Bastiais depuis 2017<br>Rouge: plus plus de 4000 euros/m2)<br>Hauteur max: 18 transactions par hectare <br>Total 2 milliards d'euros<br>403 piscines olympiques de super à 2 euros"
     },
     {
         layer: ajaccioLayer,
         center: [8.7924, 41.9189],
         zoom: 11,
-        text: "Période de Janvier 2017 à Juillet 2017<br>Nombre de transactions: 150<br>Pour un total de 1520012 €<br>Soit environ 156200 pizza"
+        text: "<H2>Omatidie-Dataviz 2022</H2><H3>R.Baggio, D.Grandi, J.B.Filippi</H3>Immobilier Ajaccien depuis 2017<br>Rouge: plus de 4000 euros/m2)<br>Hauteur max: 25 transactions par hectare <br> Total 3,7 milliards d'euros<br>748 piscines olympiques de super à 2 euros"
     },
     {
         layer: balagneLayer,
         center: [8.759, 42.5494],
         zoom: 11,
-        text: "Période de Janvier 2017 à Juillet 2017<br>Nombre de transactions: 250<br>Pour un total de 1520012 €<br>Soit environ 156200 pizza"
+        text:  "<H2>Omatidie-Dataviz 2022</H2><H3>R.Baggio, D.Grandi, J.B.Filippi</H3>Immobilier Balanin depuis 2017<br>Rouge: plus de 4000 euros/m2)<br>Hauteur max: 12 transactions par hectare <br> Total 700 millions d'euros<br>154 piscines olympiques de super à 2 euros"
     },
     {
         layer: portoVecchioLayer,
         center: [9.275, 41.587],
         zoom: 11,
-        text: "Période de Janvier 2017 à Juillet 2017<br>Nombre de transactions: 350<br>Pour un total de 1520012 €<br>Soit environ 156200 pizza"
+        text:  "<H2>Omatidie-Dataviz 2022</H2><H3>R.Baggio, D.Grandi, J.B.Filippi</H3>Immobilier Alta-Rocca depuis 2017<br>Rouge: plus de 4000 euros/m2)<br>Hauteur max: 11 transactions par hectare <br> Total 2,5 milliards d'euros<br>513 piscines olympiques de super à 2 euros"
     }
 ];
 
@@ -86,7 +86,7 @@ function getLayerInformation(layerId, jsonUrl) {
         id: layerId,
         data: jsonUrl,
         getPosition: d => [d.lng, d.lat],
-        radius: 500,
+        radius: 150,
         coverage: 0.9,
         extruded: true,
         getElevationValue: points => points.length,
