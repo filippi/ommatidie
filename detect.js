@@ -366,11 +366,12 @@ function drawKeypoints(keypoints, minConfidence) {
     }
 
     else {
-        lastDistanceToHead = distanceToHead * 0.9 + lastDistanceToHead * 0.1;
-        if (Math.abs(lastDistanceToHead - savedDistanceToHead) > 0.005) {
+        lastDistanceToHead = distanceToHead * 0.05 + lastDistanceToHead * 0.95;
+        if (Math.abs(lastDistanceToHead - savedDistanceToHead) > 0.01) {
             savedDistanceToHead = lastDistanceToHead;
         }
     }
+    var adjustedZoom = (1.8-savedDistanceToHead)*4+7
 
     var adjustedDistance = 2// savedDistanceToHead
 
@@ -391,8 +392,8 @@ function drawKeypoints(keypoints, minConfidence) {
 
     if (!flying) {
         map?.setBearing(nx * 100);
-        map?.setPitch(60 + nz * -30);
-        // map?.setZoom(10 * savedDistanceToHead)
+        map?.setPitch(100 + nz * -60);
+        map?.setZoom(adjustedZoom)
     }
 
 

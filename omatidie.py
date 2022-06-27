@@ -5,7 +5,7 @@ Created on Tue Jun 21 15:01:24 2022
 
 @author: Roberta Baggio, J.B. Filippi, Damien Grandi
 Challenge Dataviz 28/06/2022  Equipe Omatidie
-
+# Préparation des données
 
 """
 
@@ -14,7 +14,10 @@ from netCDF4 import Dataset
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from scipy import interpolate
 refProjectionFile = "/Users/filippi_j/data/2022/firecaster_surface_data/refProjection.nc"
+import json
+
 
 def loadFromOpenDataCorsica():
     print("Chargement des données sur Opendata.Corsica")
@@ -39,7 +42,7 @@ def loadFromOpenDataCorsica():
         
     return dtt
 
-def locationtoCSV(slat,slng,size,patheout):
+def locationtoCSV(slat,slng,size,patheout,write=False):
     buffer = size
     fcdf = Dataset(refProjectionFile, 'r')
     
@@ -62,27 +65,89 @@ def locationtoCSV(slat,slng,size,patheout):
     lon= lngs[nearest[0]-buffer:nearest[0]+buffer, nearest[1]-buffer:nearest[1]+buffer]
     lat = lats[nearest[0]-buffer:nearest[0]+buffer, nearest[1]-buffer:nearest[1]+buffer]
         
-    pd.DataFrame(z).to_csv(patheout)
+    if(write):
+        pd.DataFrame(z).to_csv(patheout)
     
     return z, lat,lon
-#ajouter une colonne région + 1 colonne semestre
 
-#precomputed=False
+def genSubsetValue(bounds, df, start_date, end_date) :
+    
+    
+    mask = (df['date_mutation'] >  pd.to_datetime(start_date)) & (df['date_mutation'] <=  pd.to_datetime(end_date))
+    fileterd = df.loc[mask]
+    mask = (df['latitude'] >  bounds[0]) & (df['latitude'] <=  bounds[2])
+    fileterd = fileterd.loc[mask]
+    mask = (df['longitude'] >  bounds[1]) & (df['longitude'] <=  bounds[3])
+    fileterd = fileterd.loc[mask]
+    mask = (df['PRIX_m2'] >  10) & (df['PRIX_m2'] <=  30000)
+    fileterd = fileterd.loc[mask]
+  
+    return fileterd
+    
+ 
+def makeAreaValues(df,bounds):
+    x = np.array(df['longitude'] )
+    y = np.array(df['latitude'] )
+    z = np.array(df["PRIX_m2"])
+    
+    
+    
+    X = np.linspace(bounds[1], bounds[3],num=120)
+    Y = np.linspace(bounds[0], bounds[2],num=120)
+    
+    X, Y = np.meshgrid(X, Y)  # 2D grid for interpolation
+ 
+    interp = interpolate.griddata((x, y), z, (X, Y), method='linear')
+    
+    Z = interp
+    return Z
+ 
+def compiledata(df):
+    df['date_mutation'] = pd.to_datetime(df['date_mutation'])
+    dextract = df[["latitude","longitude","PRIX_m2","date_mutation","valeur_fonciere","SURF",]]
+    
+    
 
-#df = {}
-#if precomputed:
-#    df = pd.read_csv (r'scatterSetFoncierMOD.csv')
-#else:
-#    df =  loadFromOpenDataCorsica()
+precomputed=True
 
-def compiledata():
-    df['date_de_la_mutation'] = pd.to_datetime(df['date_de_la_mutation'])
-    dextract = df[["latitude","longitude","PRIX_m2","date_de_la_mutation","valeur_fonciere","SURF",]]
-    dextract.to_csv('/Users/filippi_j/Documents/workspace/jsPlayground/Ommatidie/scatterSetFoncier2.csv')  
+df = {}
+if precomputed:
+    df = pd.read_csv (r'scatterSetFoncier.csv')
+else:
+    df =  loadFromOpenDataCorsica()
+
+df['date_mutation'] = pd.to_datetime(df['date_mutation'])
 
 areas = {}
-areas["ajaccio"] = (41.9189, 8.7924)
+areas["ajaccio41d9189x8d7924"] = (41.9189, 8.7924)
+areas["balagne42d5494x8d759"] = (42.5494, 8.759)
+areas["bastia42d6935x9d4244"] = (42.6935, 9.4244)
+areas["portovek41d587x9d275"] = (41.667, 9.275)
+areas["corte42d304x9d156"] = (42.304, 9.156)
+
+#dates =('2017-1-1', '2018-1-1', '2019-1-1', '2020-1-1','2021-1-1', '2022-1-1',)
+dates =('2017-1-1','2022-1-1')
+
 for area in areas.keys():
-        z,la,lo = locationtoCSV(areas[area][0], areas[area][1],25,"%s.csv"%area)
-        plt.matshow(z)
-        plt.show()
+        z,lats,lngs = locationtoCSV(areas[area][0], areas[area][1],50,"%s.csv"%area)
+        bounds =(lats[0,0],lngs[0,0],lats[-1,-1],lngs[-1,-1])
+   
+        
+        for i,datestr in enumerate(dates[:-1]):
+            selectedPoints = genSubsetValue(bounds, df, datestr, dates[i+1])
+     
+            toto = []
+            print(area)
+            for index, row in selectedPoints.iterrows():
+                
+                mamaison={}
+                mamaison["lat"] = row['latitude']
+                mamaison["lng"] = row['longitude']
+                mamaison["prixM2"] = row['PRIX_m2']
+                mamaison["prix"] = row['valeur_fonciere']
+                toto.append(mamaison)
+               
+            with open('%s.json'%area, 'w') as outfile:
+                json.dump(toto, outfile,indent=4, sort_keys=True, ensure_ascii=False)
+            
+ 
