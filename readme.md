@@ -1,4 +1,4 @@
-# Omatidie - Challenge Dataviz 2021 - L'Observateur Observé, Immobilier mais Mobile, suivant le point de vue.
+# Ommatidie - Challenge Dataviz 2021 - L'Observateur observé d'un immobilier mobile suivant le point de vue.
 
 - Valeurs immobilières sur zones en Corse depuis 2017
 - Base de données DVF depuis OpenData.corsica
