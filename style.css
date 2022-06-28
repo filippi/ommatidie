@@ -69,10 +69,12 @@ div#loader {
 
 #buttons button, #buttons a {
     width: 25%;
-    height: 40px;
-    background: rgba(255,255,255,0.2);
+    height: 50px;
+    background: rgba(255,255,255,0.5);
     border: 1px solid grey;
-    color: white;
+    color:darkblue;
+    font-size: 120%;
+    font-style: bold;
 }
 
 canvas#person {
@@ -109,11 +111,23 @@ body {
     width: 100%;
 }
 
-#legend {
+#lambo {
     position: absolute;
     z-index: 2;
     left: 20px;
     bottom: 90px;
+    width: 243px;
+    background-image: url("./bato.png");
+    padding: 5px 5px 0px 5px;
+}
+
+
+
+#legend {
+    position: absolute;
+    z-index: 2;
+    left: 20px;
+    bottom: 50px;
     height: 25px;
     width: 250px;
     color: #ffffff;

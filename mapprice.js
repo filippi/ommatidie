@@ -24,25 +24,29 @@ const layers = [
         layer: bastiaLayer,
         center: [9.4244, 42.6935],
         zoom: 11,
-        text: "<H2>Omatidie-Dataviz 2022</H2><H3>R.Baggio, D.Grandi, J.B.Filippi</H3>Immobilier Bastiais depuis 2017<br>Rouge: plus plus de 4000 euros/m2)<br>Hauteur max: 18 transactions par hectare <br>Total 2 milliards d'euros<br>403 piscines olympiques de super à 2 euros"
+        psize:"<BR> <BR> <BR> <BR> <BR> <BR> <BR>",
+        text: "<H2>Omatidie-Dataviz 2022</H2><H3>R.Baggio, D.Grandi, J.B.Filippi</H3>Immobilier Bastiais depuis 2017<br>Rouge: >4000 euros par m2<br>Tour la plus haute: 180 ventes<br>Total 2 milliards d'euros,<br>le prix de 2,5 paquebots"
     },
     {
         layer: ajaccioLayer,
-        center: [8.7924, 41.9189],
+        center: [8.7824, 41.9189],
         zoom: 11,
-        text: "<H2>Omatidie-Dataviz 2022</H2><H3>R.Baggio, D.Grandi, J.B.Filippi</H3>Immobilier Ajaccien depuis 2017<br>Rouge: plus de 4000 euros/m2)<br>Hauteur max: 25 transactions par hectare <br> Total 3,7 milliards d'euros<br>748 piscines olympiques de super à 2 euros"
+        psize:"<BR> <BR> <BR> <BR> <BR> <BR> <BR> <BR> <BR> <BR> <BR> <BR> <BR>",
+        text: "<H2>Omatidie-Dataviz 2022</H2><H3>R.Baggio, D.Grandi, J.B.Filippi</H3>Immobilier Ajaccien depuis 2017<br>Rouge: >4000 euros/m2)<br>Tour la plus haute: 290 ventes<br>Total 3,7 milliards d'euros,<br>le prix de 4,5  paquebots"
     },
     {
         layer: balagneLayer,
-        center: [8.759, 42.5494],
+        center: [8.759, 42.5894],
         zoom: 11,
-        text:  "<H2>Omatidie-Dataviz 2022</H2><H3>R.Baggio, D.Grandi, J.B.Filippi</H3>Immobilier Balanin depuis 2017<br>Rouge: plus de 4000 euros/m2)<br>Hauteur max: 12 transactions par hectare <br> Total 700 millions d'euros<br>154 piscines olympiques de super à 2 euros"
+        psize:"<BR> <BR> <BR>" ,
+        text:  "<H2>Omatidie-Dataviz 2022</H2><H3>R.Baggio, D.Grandi, J.B.Filippi</H3>Immobilier Balanin depuis 2017<br>Rouge: >4000 euros/m2)<br>Tour la plus haute: 150 ventes<br>Total 700 millions d'euros,<br>le prix de 1 paquebot"
     },
     {
         layer: portoVecchioLayer,
         center: [9.275, 41.587],
         zoom: 11,
-        text:  "<H2>Omatidie-Dataviz 2022</H2><H3>R.Baggio, D.Grandi, J.B.Filippi</H3>Immobilier Alta-Rocca depuis 2017<br>Rouge: plus de 4000 euros/m2)<br>Hauteur max: 11 transactions par hectare <br> Total 2,5 milliards d'euros<br>513 piscines olympiques de super à 2 euros"
+        psize:"<BR> <BR> <BR> <BR> <BR> <BR> <BR> <BR> ",
+        text:  "<H2>Omatidie-Dataviz 2022</H2><H3>R.Baggio, D.Grandi, J.B.Filippi</H3>Immobilier Alta-Rocca depuis 2017<br>Rouge: >4000 euros/m2)<br>Tour la plus haute: 120 ventes<br>Total 2,5 milliards d'euros,<br>le prix de 3 paquebots"
     }
 ];
 
@@ -75,8 +79,8 @@ function changeMapLocation(index) {
     layer.layer.setProps({visible: true});
     map.flyTo({ center: layer.center, zoom: layer.zoom });
 
-    setInfoText(layer.text)
-
+    setInfoText(layer.text);
+    document.getElementById("lambo").innerHTML = layer.psize;
     currentLayerIndex = index
 }
 
