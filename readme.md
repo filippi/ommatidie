@@ -16,7 +16,7 @@ L'ensemble des transactions est elle évaluée en quantité de paquebots tout ne
 Ce mime singe avatar n’est autre que vous, l’observateur humain, désormais projeté au milieu de la donnée. Imaginez maintenant que finalement, c’est lui qui vous regarde, tout comme ces valeurs immobilières vous commandent, que vous subissez.
 
 Cliquer sur l'image pour la vidéo :
-[![Regarder la vidéo](https://img.youtube.com/vi/8D2eXhNDJkA/maxresdefault.jpg)](https://youtu.be/8D2eXhNDJkA)
+[![Regarder la vidéo](videomin.jpg)](https://youtu.be/qLZNRctZzt0)
 
 ## Utilisation
 Cloner le dépôt et ouvrir index.html avec Google Chrome. Marche préférablement avec un ordinateur équipé de webcam située juste au-dessus de l'écran. Fait un bel effet au passant si disposé sur un grand écran/ordinateur (avec webcam) avec diffusion en continu.
