@@ -15,17 +15,17 @@ Ce mime singe avatar n’est autre que vous, l’observateur humain, désormais 
 Cloner le dépôt et ouvrir index.html avec Google Chrome. Marche préférablement avec un ordinateur équipé de webcam située juste au-dessus de l'écran.
 
 ## Technos
->Mapbox.gl -> Fond de carte 3D
->Deck.gl -> Surcouche à Mapbox pour des sources supplémentaires
->Tensorflow.js -> Pour activer des réseaux 
->Bodypix -> Réseau pré-entrainé de détection d'articulations par webcam
+> Mapbox.gl -> Fond de carte 3D
+> Deck.gl -> Surcouche à Mapbox pour des sources supplémentaires
+> Tensorflow.js -> Pour activer des réseaux 
+> Bodypix -> Réseau pré-entrainé de détection d'articulations par webcam
 
 Bodypix permet de trouver la position des articulations, en posant l'hypothèse d'une distance standard entre les yeux on retrouve la distance à l'écran, la position de la tête servant à aluster la perspective, celle des mains, le changement de zones. 
 
 ## La ou on a pompé les morceaux de code
 Merci à vous :
->https://facetouchmonitor.com
->https://sites-formations.univ-rennes2.fr/mastersigat/WebMaps/DeckGL_DVF.html
+> https://facetouchmonitor.com
+> https://sites-formations.univ-rennes2.fr/mastersigat/WebMaps/DeckGL_DVF.html
  
 ## L'équipe
 > **Roberta Baggio**, Oletta, Chercheur(e) de Padoue, il suffit de la prier de trouver, aidée par son Saint-Panda Antoine
