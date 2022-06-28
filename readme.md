@@ -28,8 +28,8 @@ Bodypix permet de trouver la position des articulations, en posant l'hypothèse 
 
 ## La ou on a pompé les morceaux de code
 Merci à vous :
-- https://facetouchmonitor.com
--https://sites-formations.univ-rennes2.fr/mastersigat/WebMaps/DeckGL_DVF.html
+- Usage de tensorflow.js https://facetouchmonitor.com
+- Usage de deck.gl, projets Master SIGAT https://sites-formations.univ-rennes2.fr/mastersigat/index.php/realisations/projets-webmapping
  
 ## L'équipe
 - **Roberta Baggio**, Oletta, Chercheur(e) de Padoue, il suffit de la prier de trouver, aidée par son Saint-Panda Antoine
