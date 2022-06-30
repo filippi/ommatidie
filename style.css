@@ -70,10 +70,10 @@ div#loader {
 #buttons button, #buttons a {
     width: 25%;
     height: 50px;
-    background: rgba(255,255,255,0.5);
+    background: rgba(0,0,0,0.7);
     border: 1px solid grey;
-    color:darkblue;
-    font-size: 120%;
+    color:white;
+    font-size: 130%;
     font-style: bold;
 }
 
