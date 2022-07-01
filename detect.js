@@ -24,7 +24,7 @@ document.body.onload = function() {
     // loader.style.display = "block";
 
     // Fix constraints to 640 px width; higher resolutions are more accurate but slower
-    navigator.mediaDevices.getUserMedia({ video: { width: 640 }, audio: false })
+    navigator.mediaDevices.getUserMedia({ video: { width: 320 }, audio: false })
         .then(handleSuccess)
         .catch(handleError)
 }
@@ -217,7 +217,7 @@ sourceVideo.onplaying = () => {
     }
 };
 
-function load(multiplier = 0.75, stride = 16) {
+function load(multiplier = 0.75,    stride = 8) {
     sourceVideo.width = sourceVideo.videoWidth;
     sourceVideo.height = sourceVideo.videoHeight;
 
