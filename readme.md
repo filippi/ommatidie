@@ -1,6 +1,6 @@
 # Ommatidia - Tensor-flow face augmented reality - Dataviz Challenge 2021 - The Observer Observed in a Mobile Real Estate from Different Perspectives
 
-[![Demo on site](filippi.github.io/ommatidie/)](https://filippi.github.io/ommatidie/)
+[![Demo on site]](https://filippi.github.io/ommatidie/)
 
 - Real estate values in Corsican zones since 2017
 - DVF database from OpenData.corsica
