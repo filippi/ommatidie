@@ -1,45 +1,47 @@
-# Ommatidie - Challenge Dataviz 2021 - L'Observateur observé d'un immobilier mobile suivant le point de vue.
+# Ommatidia - Tensor-flow face augmented reality - Dataviz Challenge 2021 - The Observer Observed in a Mobile Real Estate from Different Perspectives
 
-- Valeurs immobilières sur zones en Corse depuis 2017
-- Base de données DVF depuis OpenData.corsica
+[![Demo on site](filippi.github.io/ommatidie/)](https://filippi.github.io/ommatidie/)
 
-## L'idée
-La plateforme présente les valeur immobilières issues de la base DVF (Demandes de valeurs foncières). L'idée ici est de proposer un autre regard, mobile, sur l'immobilier, prendre de la hauteur pour constater répartition des richesses et comparer les régions. 
-L'interactivité proposée se veut à la fois intuitive, amusante et espère susciter l'étonnement, c’est donc à la fois un peu « artistique », un peu « technique » et un peu « géomatique/cartographique ».
+- Real estate values in Corsican zones since 2017
+- DVF database from OpenData.corsica
 
-Un bonhomme apparait, c’est vous, devant le miroir de votre écran, après avoir pris conscience que ce mime vous singe, vous pouvez prendre le contrôle de votre dataviz, plus interactive que jamais.
+## The Idea
+The platform presents real estate values from the DVF (Demand for Property Values) database. The idea here is to offer a different, mobile perspective on real estate, gaining altitude to observe the distribution of wealth and compare regions. 
+The proposed interactivity is intended to be intuitive, fun, and aims to evoke astonishment, so it is a bit "artistic," a bit "technical," and a bit "geomatic/cartographic."
 
-Cet avatar va alors vous permettre de choisir des zones avec les mains, et de changer de point de vue en regardant votre écran plus près, plus à gauche, plus bas… en changeant de point de vue.
+A character appears, it's you, in front of the mirror of your screen. After realizing that this mime is mimicking you, you can take control of your dataviz, more interactive than ever.
 
-L'ensemble des transactions est elle évaluée en quantité de paquebots tout neufs qui auraient pu être achetés.
+This avatar will then allow you to select zones with your hands, and change your point of view by looking at your screen closer, to the left, lower... by changing your perspective.
 
-Ce mime singe avatar n’est autre que vous, l’observateur humain, désormais projeté au milieu de la donnée. Imaginez maintenant que finalement, c’est lui qui vous regarde, tout comme ces valeurs immobilières vous commandent, que vous subissez.
+The total transactions are assessed in terms of the number of brand-new cruise ships that could have been bought.
 
-Cliquer sur l'image pour la vidéo :
-[![Regarder la vidéo](videomin.jpg)](https://youtu.be/qLZNRctZzt0)
+This mimicking avatar is none other than you, the human observer, now projected amidst the data. Now imagine that it is he who is watching you, just as these real estate values command and affect you.
 
-## Utilisation
-Cloner le dépôt et ouvrir index.html avec Google Chrome. Marche préférablement avec un ordinateur équipé de webcam située juste au-dessus de l'écran. Fait un bel effet au passant si disposé sur un grand écran/ordinateur (avec webcam) avec diffusion en continu.
+Click on the image for the video:
+[![Watch the video](videomin.jpg)](https://youtu.be/qLZNRctZzt0)
 
-## Technos
-- Mapbox.gl -> Fond de carte 3D
-- Deck.gl -> Surcouche à Mapbox pour des sources supplémentaires
-- Tensorflow.js -> Pour activer des réseaux 
-- Bodypix -> Réseau pré-entrainé de détection d'articulations par webcam
+## Usage
+Clone the repository and open index.html with Google Chrome. Best used with a computer equipped with a webcam located just above the screen. Makes a great impression when displayed on a large screen/computer (with webcam) for continuous broadcasting.
 
-Bodypix permet de trouver la position des articulations, en posant l'hypothèse d'une distance standard entre les yeux on retrouve la distance à l'écran, la position de la tête servant à aluster la perspective, celle des mains, le changement de zones. 
+## Technologies
+- Mapbox.gl -> 3D map base
+- Deck.gl -> Overlay for Mapbox with additional sources
+- Tensorflow.js -> To activate networks
+- Bodypix -> Pre-trained network for webcam-based joint detection
 
-## La ou on a pompé les morceaux de code
-Merci à vous :
-- Usage de tensorflow.js https://facetouchmonitor.com
-- Usage de deck.gl, projets Master SIGAT https://sites-formations.univ-rennes2.fr/mastersigat/index.php/realisations/projets-webmapping
+Bodypix is used to locate joint positions. Assuming a standard distance between the eyes, it finds the distance to the screen, with the head position adjusting the perspective and the hand positions changing the zones.
+
+## Where We Borrowed Code Snippets
+Thank you to:
+- Use of tensorflow.js https://facetouchmonitor.com
+- Use of deck.gl, Master SIGAT projects https://sites-formations.univ-rennes2.fr/mastersigat/index.php/realisations/projets-webmapping
  
-## L'équipe
-- **Roberta Baggio**, Oletta, Chercheur(e) de Padoue, il suffit de la prier de trouver, aidée par son Saint-Panda Antoine
-- **Damien Grandi**, voit loin mais mieux de près, intègre mieux que Runge-Kutta
-- **Jean-Baptiste Filippi**, voit près mais mieux de loin, décadrage d'équipe, sans limites pas de trépas
+## The Team
+- **Roberta Baggio**, Oletta, Researcher from Padua, just ask her to find, aided by her Saint-Panda Antoine
+- **Damien Grandi**, sees far but better up close, integrates better than Runge-Kutta
+- **Jean-Baptiste Filippi**, sees close but better from afar, team's out-of-the-box thinker, without limits there's no demise
 
-## fichiers
-- omatidie.py : téléchargement depuis opendata.corsica et formatage des données
-- mapprice.js: affichage de carte
-- detect.js : détection des mouvement et passages d'évènements UI
+## Files
+- omatidie.py: Downloading from opendata.corsica and formatting the data
+- mapprice.js: Map display
+- detect.js: Motion detection and UI event handling
